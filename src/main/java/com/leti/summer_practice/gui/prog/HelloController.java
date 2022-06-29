@@ -1,4 +1,4 @@
-package com.leti.summer_practice;
+package com.leti.summer_practice.gui.prog;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

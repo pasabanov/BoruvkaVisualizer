@@ -6,7 +6,7 @@
 <?import javafx.scene.control.Button?>
 
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.leti.summer_practice.HelloController">
+      fx:controller="com.leti.summer_practice.gui.prog.HelloController">
 
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
@@ -14,6 +14,6 @@
 
     <Label fx:id="welcomeText"/>
 
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+    <Button text="%hello" onAction="#onHelloButtonClick"/>
 
 </VBox>
