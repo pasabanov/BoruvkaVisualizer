@@ -8,6 +8,10 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * A class for accessing resources.
+ * It has the main strings bundle inside, that contains all strings, that are used in application.
+ */
 public final class R {
 
     private static final String BUNDLES_PATH = "com/leti/summer_practice/";
