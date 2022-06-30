@@ -13,7 +13,7 @@ public class SummerPracticeApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         primaryStage.setTitle(R.string("AppName"));
-        primaryStage.setScene(new Scene(R.load("hello-view.fxml"), 320, 240));
+        primaryStage.setScene(new Scene(R.loadFXML("hello-view.fxml"), 320, 240));
         primaryStage.show();
     }
 

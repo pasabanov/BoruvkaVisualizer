@@ -21,6 +21,9 @@ public final class R {
     private static ResourceBundle mainStringsBundle = ResourceBundle.getBundle(MAIN_STRINGS_BUNDLE_PATH);
 
 
+    /**
+     * Class can not be instantiated.
+     */
     private R() {
         throw new Error("Forbidden instance of " + R.class.getName() + "!");
     }
@@ -51,6 +54,14 @@ public final class R {
     public static void setLocale(Locale locale) {
         mainStringsBundle = ResourceBundle.getBundle(MAIN_STRINGS_BUNDLE_PATH, locale);
     }
+
+    /**
+     * Refreshes main strings bundle: re-uploads bundle with current locale.
+     */
+    public static void refresh() {
+        setLocale(getLocale());
+    }
+
 
     /**
      * Get string from main strings bundle.
@@ -100,16 +111,16 @@ public final class R {
      * @return a Parent instance.
      * @throws IOException if parsing was unsuccessful.
      */
-    public static Parent load(URL url) throws IOException {
-        return load(url, getMainStringsBundle());
+    public static Parent loadFXML(URL url) throws IOException {
+        return loadFXML(url, getMainStringsBundle());
     }
-    public static Parent load(URL url, ResourceBundle resourceBundle) throws IOException {
+    public static Parent loadFXML(URL url, ResourceBundle resourceBundle) throws IOException {
         return fxmlLoader(url, resourceBundle).load();
     }
-    public static Parent load(String resourceName) throws IOException {
-        return load(resourceName, getMainStringsBundle());
+    public static Parent loadFXML(String resourceName) throws IOException {
+        return loadFXML(resourceName, getMainStringsBundle());
     }
-    public static Parent load(String resourceName, ResourceBundle resourceBundle) throws IOException {
+    public static Parent loadFXML(String resourceName, ResourceBundle resourceBundle) throws IOException {
         return fxmlLoader(resourceName, resourceBundle).load();
     }
 }
