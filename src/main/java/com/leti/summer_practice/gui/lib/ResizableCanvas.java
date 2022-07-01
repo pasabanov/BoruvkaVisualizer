@@ -10,11 +10,11 @@ public class ResizableCanvas extends Canvas {
 
     public ResizableCanvas() {
         // Redraw canvas when size changes.
-        widthProperty().addListener(evt -> {
+        widthProperty().addListener(observable -> {
             if (!redrawLock)
                 refresh();
         });
-        heightProperty().addListener(evt -> {
+        heightProperty().addListener(observable -> {
             if (!redrawLock)
                 refresh();
         });
