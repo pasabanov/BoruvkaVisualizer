@@ -7,14 +7,22 @@ import javafx.stage.Stage;
 
 public class SummerPracticeApplication extends Application {
 
-    protected Stage primaryStage;
+    private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.primaryStage = primaryStage;
+        setPrimaryStage(primaryStage);
         primaryStage.setTitle(R.string("AppName"));
         primaryStage.setScene(new Scene(R.loadFXML("summer-practice.fxml"), 320, 240));
         primaryStage.show();
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     public static void main(String[] args) {
