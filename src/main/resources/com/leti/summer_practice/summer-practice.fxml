@@ -1,26 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.leti.summer_practice.gui.lib.ResizableCanvas?>
+<?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import com.leti.summer_practice.gui.lib.ResizableCanvas?>
+
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+
    <center>
-      <ResizableCanvas/>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <bottom>
+            <TextField BorderPane.alignment="CENTER" />
+         </bottom>
+         <center>
+<!--            <Canvas height="200.0" width="200.0" BorderPane.alignment="CENTER" />-->
+            <ResizableCanvas/>
+         </center>
+      </BorderPane>
    </center>
+
    <right>
       <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <top>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
-               <Button mnemonicParsing="false" text="Button"/>
-               <Button mnemonicParsing="false" text="Button"/>
+               <Button mnemonicParsing="false" text="Button" />
+               <Button mnemonicParsing="false" text="Button" />
             </VBox>
          </top>
          <bottom>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
-               <Button mnemonicParsing="false" text="Button"/>
-               <Button mnemonicParsing="false" text="Button"/>
-               <Button mnemonicParsing="false" text="Button"/>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+               <HBox prefWidth="Infinity">
+                  <children>
+                     <Region HBox.hgrow="ALWAYS" />
+                     <Label text="Label" />
+                     <Button mnemonicParsing="false" text="-" />
+                     <TextField prefWidth="30.0" />
+                     <Button mnemonicParsing="false" text="+" />
+                     <Region HBox.hgrow="ALWAYS" />
+                  </children>
+               </HBox>
+               <Button mnemonicParsing="false" text="Button" />
+               <Button mnemonicParsing="false" text="Button" />
+               <Button mnemonicParsing="false" text="Button" />
             </VBox>
          </bottom>
       </BorderPane>
