@@ -10,6 +10,8 @@ module com.leti.summer_practice {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
+    opens com.leti.summer_practice.gui.lib to javafx.fxml;
+    exports com.leti.summer_practice.gui.lib;
     opens com.leti.summer_practice.gui.prog to javafx.fxml;
     exports com.leti.summer_practice.gui.prog;
 }
