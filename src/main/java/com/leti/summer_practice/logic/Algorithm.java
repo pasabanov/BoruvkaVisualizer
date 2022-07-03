@@ -1,8 +1,9 @@
-package Logic;
+package com.leti.summer_practice.logic;
 
 import java.util.*;
 
 public class Algorithm {
+
     private ArrayList<Graph.Node> vertices;
     private ArrayList<Graph.Edge> edges;
     private Graph temporary_graph; //второй граф для поиска МОД
