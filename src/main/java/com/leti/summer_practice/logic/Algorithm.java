@@ -6,7 +6,7 @@ public class Algorithm {
 
     private ArrayList<Graph.Node> vertices;
     private ArrayList<Graph.Edge> edges;
-    private Graph temporary_graph; //второй граф для поиска МОД
+     Graph temporary_graph; //второй граф для поиска МОД
     private Graph.Edge[] result; //список списков ребер,
     // которые были добавлены в компоненты связности в конце шага
     private Map<Graph.Node, Integer> hashTableNode = new HashMap<>(); //хэш-таблица для вершин и компонент
@@ -25,39 +25,46 @@ public class Algorithm {
         }
     }
 
-    private int update_components() {
-        Map<Graph.Node, Boolean> opened = new HashMap<>();
-        Map<Graph.Node, Boolean> closed = new HashMap<>();
-        int counter = 0;
 
-        for (int i = 0; i < vertices.size(); i++) {
-            opened.put(vertices.get(i), false);
+    private static class Inner {
+        boolean val;
+
+        Inner(boolean val) {
+            this.val = val;
         }
+    }
 
-        while (!opened.isEmpty()) {
-            Iterator<Map.Entry<Graph.Node, Boolean>> itr = opened.entrySet().iterator();
-            Map.Entry<Graph.Node, Boolean> entry = itr.next();
-            Graph.Node key = entry.getKey();
-            dfs(opened, closed, key, counter);
+    private int update_components() {
+        Map<Graph.Node, Inner> all_vertices = new HashMap<>();
+        ArrayList<Inner> open_vertices = new ArrayList<>();
+        for (int i = 0; i < vertices.size(); i++) {
+            Inner new_val = new Inner(false);
+            all_vertices.put(vertices.get(i), new_val);
+            open_vertices.add(new_val);
+        }
+        int counter =0;
+        for(int i=0; i < open_vertices.size();i++){
+            if(open_vertices.get(i).val){
+                continue;
+            }
+            dfs(all_vertices,vertices.get(i),counter);
             counter++;
         }
-
-        return counter + 1;
+        return counter;
     }
 
-    private void dfs(Map<Graph.Node, Boolean> opened, Map<Graph.Node, Boolean> closed, Graph.Node current, int counter) {
+    private void dfs(Map<Graph.Node, Inner> all_vertices, Graph.Node current, int counter) {
         hashTableNode.put(current, counter);
-        opened.remove(current);
-        closed.put(current, true);
-
+        all_vertices.get(current).val = true;
         ArrayList<Graph.Node> neighbours = temporary_graph.get_neighbours(current);
         for (int i = 0; i < neighbours.size(); i++) {
-            if (!closed.containsKey(neighbours.get(i))) {
-                dfs(opened, closed, neighbours.get(i), counter);
+            if (!all_vertices.get(neighbours.get(i)).val) {
+                dfs(all_vertices, neighbours.get(i), counter);
             }
         }
-    }
 
+
+    }
     public Graph.Edge[] get_new_edges() {
 
         if (length_components == 1) {
@@ -90,17 +97,17 @@ public class Algorithm {
     }
 
     public void next_step() {
-        if (length_components == 1){
+        if (length_components == 1) {
             return;
         }
         length_components = update_components();
     }
 
-    public Integer get_vertex_color(Graph.Node vertex){
+    public Integer get_vertex_color(Graph.Node vertex) {
         return hashTableNode.get(vertex);
     }
 
-    public Integer get_edge_color(Graph.Node start_vertex, Graph.Node finish_vertex){
+    public Integer get_edge_color(Graph.Node start_vertex, Graph.Node finish_vertex) {
         if (hashTableNode.get(start_vertex).equals(hashTableNode.get(finish_vertex))) {
             return hashTableNode.get(start_vertex);
         }
