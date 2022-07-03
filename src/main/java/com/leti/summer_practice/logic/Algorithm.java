@@ -6,7 +6,7 @@ public class Algorithm {
 
     private ArrayList<Graph.Node> vertices;
     private ArrayList<Graph.Edge> edges;
-     Graph temporary_graph; //второй граф для поиска МОД
+    private Graph temporary_graph; //второй граф для поиска МОД
     private Graph.Edge[] result; //список списков ребер,
     // которые были добавлены в компоненты связности в конце шага
     private Map<Graph.Node, Integer> hashTableNode = new HashMap<>(); //хэш-таблица для вершин и компонент
@@ -42,12 +42,12 @@ public class Algorithm {
             all_vertices.put(vertices.get(i), new_val);
             open_vertices.add(new_val);
         }
-        int counter =0;
-        for(int i=0; i < open_vertices.size();i++){
-            if(open_vertices.get(i).val){
+        int counter = 0;
+        for (int i = 0; i < open_vertices.size(); i++) {
+            if (open_vertices.get(i).val) {
                 continue;
             }
-            dfs(all_vertices,vertices.get(i),counter);
+            dfs(all_vertices, vertices.get(i), counter);
             counter++;
         }
         return counter;
@@ -65,6 +65,7 @@ public class Algorithm {
 
 
     }
+
     public Graph.Edge[] get_new_edges() {
 
         if (length_components == 1) {
@@ -101,6 +102,13 @@ public class Algorithm {
             return;
         }
         length_components = update_components();
+    }
+
+    ArrayList<Graph.Edge> get_answer(){
+        if(length_components != 1){
+            throw new RuntimeException("Algorithm is not finished yet");
+        }
+        return temporary_graph.get_edges();
     }
 
     public Integer get_vertex_color(Graph.Node vertex) {
