@@ -88,8 +88,7 @@ public class Logic implements LogicInterface {
     }
 
     public void start_algorithm() {
-        if (algorithm != null)
-        {
+        if (algorithm != null) {
 //            throw new RuntimeException("Algorithm was already started");
         }
         algorithm = new Algorithm(graph);
@@ -125,6 +124,23 @@ public class Logic implements LogicInterface {
         }
 
         algorithm.next_step();
+    }
+
+    ArrayList<Edge_info> get_answer() {
+        if (algorithm == null) {
+            throw new RuntimeException("Algorithm is not finished yet");
+        }
+        ArrayList<Graph.Edge> answer = algorithm.get_answer();
+        ArrayList<Edge_info> res = new ArrayList<>();
+        for (Graph.Edge edge : answer) {
+            Edge_info new_edge = new Edge_info();
+            new_edge.start = edge.get_start().get_name();
+            new_edge.finish = edge.get_finish().get_name();
+            new_edge.color = null;
+            new_edge.weight = edge.get_weight();
+            res.add(new_edge);
+        }
+        return res;
     }
 }
 
