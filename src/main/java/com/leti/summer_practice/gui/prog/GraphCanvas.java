@@ -57,11 +57,11 @@ public class GraphCanvas extends Pane {
 
 
     public double getRelativeX(double x) {
-        return (getWidth()/2 * x - cameraX.get() + getWidth()/2) / zoom.get();
+        return (getWidth()/2 * (x+1) - cameraX.get()) / zoom.get();
     }
 
     public double getRelativeY(double y) {
-        return (getHeight()/2 * y - cameraY.get() + getHeight()/2) / zoom.get();
+        return (getHeight()/2 * (y+1) - cameraY.get()) / zoom.get();
     }
 
 
