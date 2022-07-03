@@ -1,7 +1,6 @@
 package com.leti.summer_practice.gui.prog;
 
 import com.leti.summer_practice.R;
-import com.leti.summer_practice.logic.Graph;
 import com.leti.summer_practice.logic.Logic;
 import com.leti.summer_practice.logic.LogicInterface;
 import javafx.event.ActionEvent;
@@ -18,10 +17,7 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class SummerPracticeController implements Initializable {
 
@@ -46,6 +42,8 @@ public class SummerPracticeController implements Initializable {
     public Button resetButton;
 
     LogicInterface logic = new Logic();
+
+    private Map<String,Pair<Double,Double>> verticesCoordsMap = new HashMap<>();
 
     boolean graphExists = false;
 
@@ -86,7 +84,7 @@ public class SummerPracticeController implements Initializable {
 //        });
 
         canvas.setDrawer(graphCanvas -> {
-            Map<String, Pair<Double,Double>> verticesCoordsMap = graphCanvas.getVerticesCoordsMap();
+            Map<String, Pair<Double,Double>> verticesCoordsMap = this.verticesCoordsMap;
             if (verticesCoordsMap.isEmpty())
                 return;
             for (LogicInterface.Edge_info edge : logic.getEdges()) {
@@ -134,9 +132,17 @@ public class SummerPracticeController implements Initializable {
             alert.showAndWait();
         }
         logic.start_algorithm();
-        canvas.consumeLogic(logic);
+        generateVerticesCoords(logic);
         canvas.redraw();
         graphExists = true;
+    }
+
+    public void generateVerticesCoords(LogicInterface logic) {
+        ArrayList<LogicInterface.Node_info> node_infos = logic.getVertices();
+        double step = 2 * Math.PI / node_infos.size();
+        double angle = Math.PI;
+        for (int i = 0; i < node_infos.size(); ++i, angle += step)
+            verticesCoordsMap.put(node_infos.get(i).name, new Pair<>(0.9*Math.cos(angle), 0.9*Math.sin(angle)));
     }
 
     public void onStartClick(ActionEvent actionEvent) {

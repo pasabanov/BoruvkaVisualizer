@@ -1,15 +1,10 @@
 package com.leti.summer_practice.gui.prog;
 
-import com.leti.summer_practice.logic.LogicInterface;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.layout.Pane;
-import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class GraphCanvas extends Pane {
@@ -21,8 +16,6 @@ public class GraphCanvas extends Pane {
             cameraY = new SimpleDoubleProperty(0);
     private final DoubleProperty
             zoom = new SimpleDoubleProperty(1);
-
-    private Map<String,Pair<Double,Double>> verticesCoordsMap = new HashMap<>();
 
     private boolean redrawLock = false;
 
@@ -62,15 +55,6 @@ public class GraphCanvas extends Pane {
 
     public double getRelativeY(double y) {
         return (getHeight()/2 * (y+1) - cameraY.get()) / zoom.get();
-    }
-
-
-    public void consumeLogic(LogicInterface logic) {
-        ArrayList<LogicInterface.Node_info> node_infos = logic.getVertices();
-        double step = 2 * Math.PI / node_infos.size();
-        double angle = Math.PI;
-        for (int i = 0; i < node_infos.size(); ++i, angle += step)
-            verticesCoordsMap.put(node_infos.get(i).name, new Pair<>(0.9*Math.cos(angle), 0.9*Math.sin(angle)));
     }
 
 
@@ -132,14 +116,6 @@ public class GraphCanvas extends Pane {
     }
     public void setZoom(double zoom) {
         this.zoom.set(zoom);
-    }
-
-
-    public Map<String, Pair<Double, Double>> getVerticesCoordsMap() {
-        return verticesCoordsMap;
-    }
-    public void setVerticesCoordsMap(Map<String, Pair<Double, Double>> verticesCoordsMap) {
-        this.verticesCoordsMap = verticesCoordsMap;
     }
 
 
