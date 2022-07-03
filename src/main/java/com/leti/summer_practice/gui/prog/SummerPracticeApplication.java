@@ -5,8 +5,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Locale;
-
 public class SummerPracticeApplication extends Application {
 
     private static SummerPracticeApplication application;
