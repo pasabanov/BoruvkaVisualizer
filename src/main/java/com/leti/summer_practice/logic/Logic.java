@@ -118,15 +118,15 @@ public class Logic implements LogicInterface {
         return new_edges;
     }
 
-    public void next_big_step() {
+    public boolean next_big_step() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not started");
         }
 
-        algorithm.next_step();
+        return algorithm.next_step();
     }
 
-    ArrayList<Edge_info> get_answer() {
+    public ArrayList<Edge_info> get_answer() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not finished yet");
         }

@@ -97,15 +97,16 @@ public class Algorithm {
         return result;
     }
 
-    public void next_step() {
+    public boolean next_step() {
         if (length_components == 1) {
-            return;
+            return true;
         }
         length_components = update_components();
+        return false;
     }
 
-    ArrayList<Graph.Edge> get_answer(){
-        if(length_components != 1){
+    ArrayList<Graph.Edge> get_answer() {
+        if (length_components != 1) {
             throw new RuntimeException("Algorithm is not finished yet");
         }
         return temporary_graph.get_edges();

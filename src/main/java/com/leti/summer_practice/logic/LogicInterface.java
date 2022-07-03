@@ -39,5 +39,7 @@ public interface LogicInterface {
 
     Logic.Edge_info[] get_new_edges();
 
-    void next_big_step();
+    boolean next_big_step();
+
+    ArrayList<Edge_info> get_answer();
 }
