@@ -1,4 +1,5 @@
 module com.leti.summer_practice {
+
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;

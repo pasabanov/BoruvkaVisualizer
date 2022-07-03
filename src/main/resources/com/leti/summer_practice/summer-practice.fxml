@@ -89,6 +89,7 @@
                </HBox>
 
                <Button fx:id="startStopButton"
+                       onAction="#onStartClick"
                        text="%start"
                        mnemonicParsing="false"/>
 

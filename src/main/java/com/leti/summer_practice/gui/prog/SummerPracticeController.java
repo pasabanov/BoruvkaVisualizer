@@ -18,6 +18,8 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -44,6 +46,10 @@ public class SummerPracticeController implements Initializable {
     public Button resetButton;
 
     LogicInterface logic = new Logic();
+
+    boolean graphExists = false;
+
+    boolean outputMatrix = true;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -130,5 +136,61 @@ public class SummerPracticeController implements Initializable {
         logic.start_algorithm();
         canvas.consumeLogic(logic);
         canvas.redraw();
+        graphExists = true;
+    }
+
+    public void onStartClick(ActionEvent actionEvent) {
+        if (!graphExists)
+            return;
+        while (!logic.isAlgorithmFinished()) {
+            while (logic.get_new_edges() != null)
+                logic.next_big_step();
+        }
+        StringBuilder sb = new StringBuilder();
+
+        if (outputMatrix) {
+            int n = logic.getVertices().size();
+            ArrayList<ArrayList<Integer>> matrix = new ArrayList<>(n);
+            for (int i = 0; i < n; ++i) {
+                matrix.add(new ArrayList<>(n));
+                for (int j = 0; j < n; ++j)
+                    matrix.get(i).add(0);
+            }
+            for (LogicInterface.Edge_info edge : logic.get_answer()) {
+                int from = fromAZto09(edge.start), to = fromAZto09(edge.finish);
+                matrix.get(from).set(to, edge.weight);
+                matrix.get(to).set(from, edge.weight);
+            }
+            for (ArrayList<Integer> row : matrix) {
+                for (Integer i : row) {
+                    sb.append(i).append(' ');
+                }
+                sb.append('\n');
+            }
+        } else {
+            for (LogicInterface.Edge_info edge : logic.get_answer())
+                sb.append(edge.start).append(" -> ").append(edge.finish).append(" = ").append(edge.weight).append('\n');
+        }
+
+        logTextArea.setText(sb.toString());
+    }
+
+    public static int fromAZto09(String string) {
+        string = string.toUpperCase(Locale.ROOT);
+        int result = 0;
+        for (int i = 0; i < string.length(); ++i) {
+            result *= 26;
+            result += string.charAt(i) - 'A';
+        }
+        return result;
+    }
+
+    public static String from09toAZ(int n) {
+        StringBuilder sb = new StringBuilder();
+        while (n > 0) {
+            sb.append((char)('A' + n % 26));
+            n /= 26;
+        }
+        return sb.reverse().toString();
     }
 }

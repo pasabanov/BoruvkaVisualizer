@@ -104,8 +104,12 @@ public class Algorithm {
         length_components = update_components();
     }
 
+    boolean isFinished() {
+        return length_components == 1;
+    }
+
     ArrayList<Graph.Edge> get_answer(){
-        if(length_components != 1){
+        if(!isFinished()){
             throw new RuntimeException("Algorithm is not finished yet");
         }
         return temporary_graph.get_edges();
