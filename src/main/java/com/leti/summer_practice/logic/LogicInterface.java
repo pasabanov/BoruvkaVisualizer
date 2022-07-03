@@ -1,5 +1,7 @@
 package com.leti.summer_practice.logic;
 
+import java.io.File;
+
 public interface LogicInterface {
 
     class Node_info {
@@ -26,7 +28,7 @@ public interface LogicInterface {
 
     Integer get_edge_color(String start, String finish);
 
-    boolean load_file(String name);
+    boolean load_file(File file);
 
     void start_algorithm();
 

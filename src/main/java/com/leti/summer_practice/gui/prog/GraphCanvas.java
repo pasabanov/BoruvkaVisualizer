@@ -1,15 +1,19 @@
 package com.leti.summer_practice.gui.prog;
 
+import com.leti.summer_practice.logic.LogicInterface;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
+import javafx.util.Pair;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class GraphCanvas extends Pane {
+    
+    private Consumer<GraphCanvas> drawer = null;
 
     private final DoubleProperty
             cameraX = new SimpleDoubleProperty(0),
@@ -17,42 +21,60 @@ public class GraphCanvas extends Pane {
     private final DoubleProperty
             zoom = new SimpleDoubleProperty(1);
 
-    private ArrayList<Circle> vertices = new ArrayList<>();
-    private ArrayList<Line> edges = new ArrayList<>();
+    private Map<String,Pair<Double,Double>> verticesCoordsMap = new HashMap<>();
 
     private boolean redrawLock = false;
 
+
     public GraphCanvas() {
-        widthProperty().addListener(observable -> {
+        InvalidationListener listener = observable -> {
             if (!redrawLock)
-                refresh();
-        });
-        heightProperty().addListener(observable -> {
-            if (!redrawLock)
-                refresh();
-        });
-        cameraXProperty().addListener(observable -> {
-            if (!redrawLock)
-                refresh();
-        });
-        cameraYProperty().addListener(observable -> {
-            if (!redrawLock)
-                refresh();
-        });
+                redraw();
+        };
+        widthProperty().addListener(listener);
+        heightProperty().addListener(listener);
+        cameraXProperty().addListener(listener);
+        cameraYProperty().addListener(listener);
+        zoomProperty().addListener(listener);
     }
 
+
+    /**
+     * Graphic methods.
+     */
     public void clear() {
         getChildren().clear();
     }
-
     public void draw() {
-
+        if (drawer != null)
+            drawer.accept(this);
     }
-
-    public void refresh() {
+    public void redraw() {
         clear();
         draw();
     }
+
+
+    public void consumeLogic(LogicInterface logic) {
+//        final int n = logic.
+//        final double step = 2 * Math.PI / n;
+        // TODO
+    }
+
+
+    /**
+     * Getter, setter and remover of the drawer.
+     */
+    public Consumer<GraphCanvas> getDrawer() {
+        return drawer;
+    }
+    public void setDrawer(Consumer<GraphCanvas> drawer) {
+        this.drawer = drawer;
+    }
+    public void removeDrawer() {
+        drawer = null;
+    }
+
 
     /**
      * Getters and setters for camera (cameraX and cameraY).
@@ -75,11 +97,61 @@ public class GraphCanvas extends Pane {
     public void setCameraY(double cameraY) {
         this.cameraY.set(cameraY);
     }
+    /**
+     * Redraws canvas maximum 1 time, even if both cameraX and cameraY changed.
+     */
     public void setCameraXY(double cameraX, double cameraY) {
         if (getCameraX() != cameraX && getCameraY() != cameraY)
             redrawLock = true;
         setCameraX(cameraX);
         redrawLock = false;
         setCameraY(cameraY);
+    }
+
+
+    /**
+     * Getter and setter for zoom.
+     */
+    public double getZoom() {
+        return zoom.get();
+    }
+    public DoubleProperty zoomProperty() {
+        return zoom;
+    }
+    public void setZoom(double zoom) {
+        this.zoom.set(zoom);
+    }
+
+
+    /**
+     * Getter, setter and switcher of the redrawLock;
+     */
+    public boolean isRedrawLock() {
+        return redrawLock;
+    }
+    public void setRedrawLock(boolean redrawLock) {
+        this.redrawLock = redrawLock;
+    }
+    public void switchRedrawLock() {
+        redrawLock = !redrawLock;
+    }
+
+
+    /**
+     * Resizes GraphCanvas.
+     *
+     * It will not redraw canvas if width and height are not changed.
+     * It will always redraw canvas maximum one time even if both width and height are changed.
+     *
+     * @param width - width to resize
+     * @param height - height to resize
+     */
+    @Override
+    public void resize(double width, double height) {
+        if (getWidth() != width && getHeight() != height)
+            redrawLock = true;
+        setWidth(width);
+        redrawLock = false;
+        setHeight(height);
     }
 }
