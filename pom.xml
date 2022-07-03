@@ -112,7 +112,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.leti.summer_practice/com.leti.summer_practice.HelloApplication</mainClass>
+                            <mainClass>com.leti.summer_practice/com.leti.summer_practice.gui.prog.SummerPracticeApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
