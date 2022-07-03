@@ -1,11 +1,13 @@
 package com.leti.summer_practice.logic;
 
+import java.io.File;
+
 public class Logic implements LogicInterface {
 
     Graph graph;
     Algorithm algorithm;
 
-    Logic() {
+    public Logic() {
         graph = new Graph();
     }
 
@@ -50,8 +52,8 @@ public class Logic implements LogicInterface {
         return algorithm.get_edge_color(start_vertex, finish_vertex);
     }
 
-    public boolean load_file(String name) {
-        return graph.read_file(name);
+    public boolean load_file(File file) {
+        return graph.read_file(file);
     }
 
     public void start_algorithm() {

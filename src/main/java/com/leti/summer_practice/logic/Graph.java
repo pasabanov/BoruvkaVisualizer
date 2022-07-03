@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class Graph {
+
     private ArrayList<ArrayList<Integer>> matrix;
     private Map<String, Integer> adress;
     int max_index;
@@ -64,8 +65,7 @@ public class Graph {
         return true;
     }
 
-    boolean read_file(String file_path) {
-        File file = new File(file_path);
+    boolean read_file(File file) {
         try (FileReader reader = new FileReader(file); BufferedReader buffer = new BufferedReader(reader)) {
             ArrayList<ArrayList<Integer>> new_matrix = new ArrayList<>();
             Integer length = null;
@@ -101,13 +101,10 @@ public class Graph {
         } catch (IOException e) {
             System.out.println("РћС€РёР±РєР° РїСЂРё РѕС‚РєСЂС‹С‚РёРё С„Р°Р№Р»Р°");
             return false;
-        }
-        catch (NumberFormatException e){
+        } catch (NumberFormatException e){
             System.out.println("РћС€РёР±РєР° РІ С‡РёСЃР»Р°С… РјР°С‚СЂРёС†С‹");
             return false;
-
         }
-
         return true;
     }
 
