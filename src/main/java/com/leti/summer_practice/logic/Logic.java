@@ -135,6 +135,11 @@ public class Logic implements LogicInterface {
     }
 
     @Override
+    public boolean isAlgorithmFinished() {
+        return algorithm.isFinished();
+    }
+
+    @Override
     public ArrayList<Edge_info> get_answer() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not finished yet");
