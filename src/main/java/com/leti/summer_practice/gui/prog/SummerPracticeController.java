@@ -1,32 +1,30 @@
 package com.leti.summer_practice.gui.prog;
 
 import com.leti.summer_practice.R;
-import com.leti.summer_practice.gui.lib.AdvancedCanvas;
+import com.leti.summer_practice.logic.Graph;
 import com.leti.summer_practice.logic.Logic;
 import com.leti.summer_practice.logic.LogicInterface;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class SummerPracticeController implements Initializable {
 
     @FXML
-    public AdvancedCanvas canvas;
+    public GraphCanvas canvas;
     @FXML
     public TextArea logTextArea;
 
@@ -80,6 +78,40 @@ public class SummerPracticeController implements Initializable {
 ////                pane.getChildren().addAll(circle, text);
 ////            }
 //        });
+
+        canvas.setDrawer(graphCanvas -> {
+            Map<String, Pair<Double,Double>> verticesCoordsMap = graphCanvas.getVerticesCoordsMap();
+            if (verticesCoordsMap.isEmpty())
+                return;
+            for (LogicInterface.Edge_info edge : logic.getEdges()) {
+                Pair<Double,Double> startCoords = verticesCoordsMap.get(edge.start),
+                        finishCoords = verticesCoordsMap.get(edge.finish);
+                double startX = graphCanvas.getRelativeX(startCoords.getKey());
+                double startY = graphCanvas.getRelativeY(startCoords.getValue());
+                double finishX = graphCanvas.getRelativeX(finishCoords.getKey());
+                double finishY = graphCanvas.getRelativeY(finishCoords.getValue());
+                Line line = new Line(startX, startY, finishX, finishY);
+                line.setStrokeWidth(2);
+                line.setStroke(Color.GREEN);
+                graphCanvas.getChildren().add(line);
+                double textX = (startX + finishX) / 2;
+                double textY = (startY + finishY) / 2;
+                Text text = new Text(textX, textY, "" + edge.weight);
+                text.setFont(Font.font(16));
+                graphCanvas.getChildren().add(text);
+            }
+            for (String name : verticesCoordsMap.keySet()) {
+                Pair<Double,Double> coords = verticesCoordsMap.get(name);
+                double x = graphCanvas.getRelativeX(coords.getKey());
+                double y = graphCanvas.getRelativeY(coords.getValue());
+                Circle circle = new Circle(x, y, 0.08 * (graphCanvas.getWidth() + graphCanvas.getHeight())/2);
+                circle.setFill(Color.ORANGE);
+                graphCanvas.getChildren().add(circle);
+                Text text = new Text(x, y, name);
+                text.setFont(Font.font(16));
+                graphCanvas.getChildren().add(text);
+            }
+        });
     }
 
     public void onLoadFromFileClick(ActionEvent actionEvent) {
@@ -95,5 +127,8 @@ public class SummerPracticeController implements Initializable {
             alert.setContentText(R.string("failed_to_load_file_alert_content_text"));
             alert.showAndWait();
         }
+        logic.start_algorithm();
+        canvas.consumeLogic(logic);
+        canvas.redraw();
     }
 }

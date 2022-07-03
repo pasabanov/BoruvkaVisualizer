@@ -12,8 +12,8 @@ module com.leti.summer_practice {
 
     exports com.leti.summer_practice.logic;
 
-    opens com.leti.summer_practice.gui.lib to javafx.fxml;
-    exports com.leti.summer_practice.gui.lib;
+//    opens com.leti.summer_practice.gui.lib to javafx.fxml;
+//    exports com.leti.summer_practice.gui.lib;
     opens com.leti.summer_practice.gui.prog to javafx.fxml;
     exports com.leti.summer_practice.gui.prog;
 }

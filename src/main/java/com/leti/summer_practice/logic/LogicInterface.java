@@ -1,6 +1,7 @@
 package com.leti.summer_practice.logic;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public interface LogicInterface {
 
@@ -27,6 +28,10 @@ public interface LogicInterface {
     Integer get_vertex_color(String name);
 
     Integer get_edge_color(String start, String finish);
+
+    ArrayList<Node_info> getVertices();
+
+    ArrayList<Edge_info> getEdges();
 
     boolean load_file(File file);
 

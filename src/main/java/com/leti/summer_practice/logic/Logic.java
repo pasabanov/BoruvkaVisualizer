@@ -1,6 +1,7 @@
 package com.leti.summer_practice.logic;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Logic implements LogicInterface {
 
@@ -52,6 +53,36 @@ public class Logic implements LogicInterface {
         return algorithm.get_edge_color(start_vertex, finish_vertex);
     }
 
+    // written by Peter
+    @Override
+    public ArrayList<Node_info> getVertices() {
+        ArrayList<Graph.Node> nodes = graph.get_vertices();
+        ArrayList<Node_info> node_infos = new ArrayList<>(nodes.size());
+        for (Graph.Node node : nodes) {
+            Node_info node_info = new Node_info();
+            node_info.name = node.get_name();
+            node_info.color = algorithm.get_vertex_color(node);
+            node_infos.add(node_info);
+        }
+        return node_infos;
+    }
+
+    // written by Peter
+    @Override
+    public ArrayList<Edge_info> getEdges() {
+        ArrayList<Graph.Edge> edges = graph.get_edges();
+        ArrayList<Edge_info> edge_infos = new ArrayList<>(edges.size());
+        for (Graph.Edge edge : edges) {
+            Edge_info edge_info = new Edge_info();
+            edge_info.start = edge.get_start().get_name();
+            edge_info.finish = edge.get_finish().get_name();
+            edge_info.weight = edge.get_weight();
+            edge_info.color = algorithm.get_edge_color(edge.get_start(), edge.get_finish());
+            edge_infos.add(edge_info);
+        }
+        return edge_infos;
+    }
+
     public boolean load_file(File file) {
         return graph.read_file(file);
     }
@@ -59,7 +90,7 @@ public class Logic implements LogicInterface {
     public void start_algorithm() {
         if (algorithm != null)
         {
-            throw new RuntimeException("Algorithm was already started");
+//            throw new RuntimeException("Algorithm was already started");
         }
         algorithm = new Algorithm(graph);
     }
