@@ -1,4 +1,4 @@
-package Logic;
+package com.leti.summer_practice.logic;
 
 import java.io.*;
 import java.util.*;
@@ -286,6 +286,7 @@ public class Graph {
     }
 
     public static class Edge {
+
         private Node start;
         private Node finish;
         private int weight;

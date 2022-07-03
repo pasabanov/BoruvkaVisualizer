@@ -1,48 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.leti.summer_practice.gui.lib.AdvancedCanvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<?import com.leti.summer_practice.gui.lib.ResizableCanvas?>
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane  fx:id="pane"
+             maxHeight="-Infinity"
+             maxWidth="-Infinity"
+             minHeight="-Infinity"
+             minWidth="-Infinity"
+             prefHeight="400.0"
+             prefWidth="600.0"
+             xmlns="http://javafx.com/javafx/18"
+             xmlns:fx="http://javafx.com/fxml/1"
+             fx:controller="com.leti.summer_practice.gui.prog.SummerPracticeController">
 
    <center>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <bottom>
-            <TextField BorderPane.alignment="CENTER" />
-         </bottom>
-         <center>
-<!--            <Canvas height="200.0" width="200.0" BorderPane.alignment="CENTER" />-->
-            <ResizableCanvas/>
-         </center>
-      </BorderPane>
+
+      <SplitPane dividerPositions="0.9"
+                 orientation="VERTICAL"
+                 prefHeight="200.0"
+                 prefWidth="160.0"
+                 BorderPane.alignment="CENTER">
+
+         <AdvancedCanvas fx:id="canvas"/>
+
+         <TextArea fx:id="logTextArea"
+                   editable="false"
+                   prefHeight="40.0"
+                   SplitPane.resizableWithParent="false"/>
+
+      </SplitPane>
    </center>
 
    <right>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+
+      <BorderPane prefHeight="200.0"
+                  prefWidth="200.0"
+                  BorderPane.alignment="CENTER">
          <top>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
-               <Button mnemonicParsing="false" text="Button" />
-               <Button mnemonicParsing="false" text="Button" />
+
+            <VBox alignment="CENTER"
+                  prefHeight="200.0"
+                  prefWidth="100.0"
+                  spacing="20.0"
+                  BorderPane.alignment="CENTER">
+
+               <Button fx:id="modeButton"
+                       text="%draw_mode"
+                       mnemonicParsing="false"/>
+
+               <Button
+                       fx:id="loadFromFileButton"
+                       onAction="#onLoadFromFileClick"
+                       text="%load_from_file"
+                       mnemonicParsing="false"/>
             </VBox>
          </top>
          <bottom>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-               <HBox prefWidth="Infinity">
-                  <children>
-                     <Region HBox.hgrow="ALWAYS" />
-                     <Label text="Label" />
-                     <Button mnemonicParsing="false" text="-" />
-                     <TextField prefWidth="30.0" />
-                     <Button mnemonicParsing="false" text="+" />
-                     <Region HBox.hgrow="ALWAYS" />
-                  </children>
+
+            <VBox alignment="CENTER"
+                  prefHeight="200.0"
+                  prefWidth="100.0"
+                  BorderPane.alignment="CENTER"
+                  spacing="5">
+
+               <HBox prefWidth="Infinity"
+                     spacing="1"
+                     alignment="CENTER">
+
+                  <Region HBox.hgrow="ALWAYS"/>
+
+                  <Label text="%speed"/>
+
+                  <Button text="-"
+                          mnemonicParsing="false"/>
+
+                  <TextField fx:id="speedTextField"
+                             text="1.0"
+                             prefWidth="40.0"
+                             alignment="CENTER"/>
+
+                  <Button text="+"
+                          mnemonicParsing="false"/>
+
+                  <Region HBox.hgrow="ALWAYS"/>
                </HBox>
-               <Button mnemonicParsing="false" text="Button" />
-               <Button mnemonicParsing="false" text="Button" />
-               <Button mnemonicParsing="false" text="Button" />
+
+               <Button fx:id="startStopButton"
+                       text="%start"
+                       mnemonicParsing="false"/>
+
+               <Button fx:id="nextStepButton"
+                       text="%next_step"
+                       mnemonicParsing="false"/>
+
+               <Button fx:id="resetButton"
+                       text="%reset"
+                       mnemonicParsing="false"/>
             </VBox>
          </bottom>
       </BorderPane>
