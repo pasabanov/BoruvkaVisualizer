@@ -6,6 +6,7 @@
 
 <?import com.leti.summer_practice.gui.prog.GraphCanvas?>
 
+<?import com.leti.summer_practice.gui.lib.VectorCanvas?>
 <BorderPane maxHeight="-Infinity"
             maxWidth="-Infinity"
             minHeight="-Infinity"
@@ -25,6 +26,7 @@
                  BorderPane.alignment="CENTER">
 
          <GraphCanvas fx:id="canvas"/>
+<!--         <VectorCanvas/>-->
 
          <TextArea fx:id="logTextArea"
                    editable="false"

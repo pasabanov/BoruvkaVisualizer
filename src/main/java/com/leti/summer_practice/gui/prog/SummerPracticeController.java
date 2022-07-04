@@ -131,7 +131,14 @@ public class SummerPracticeController implements Initializable {
             alert.setContentText(R.string("failed_to_load_file_alert_content_text"));
             alert.showAndWait();
         }
-        logic.start_algorithm();
+        try {
+            logic.start_algorithm();
+        } catch (RuntimeException re) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(R.string("failed_to_load_file_alert_title"));
+            alert.setContentText(R.string(re.getMessage()));
+            alert.showAndWait();
+        }
         generateVerticesCoords(logic);
         canvas.redraw();
         graphExists = true;
