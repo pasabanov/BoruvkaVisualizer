@@ -87,7 +87,7 @@ public class SummerPracticeController implements Initializable {
             Map<String, Pair<Double,Double>> verticesCoordsMap = this.verticesCoordsMap;
             if (verticesCoordsMap.isEmpty())
                 return;
-            for (LogicInterface.Edge_info edge : logic.getEdges()) {
+            for (LogicInterface.EdgeInfo edge : logic.getEdges()) {
                 Pair<Double,Double> startCoords = verticesCoordsMap.get(edge.start),
                         finishCoords = verticesCoordsMap.get(edge.finish);
                 double startX = graphCanvas.getRelativeX(startCoords.getKey());
@@ -123,7 +123,7 @@ public class SummerPracticeController implements Initializable {
         File file = fileChooser.showOpenDialog(SummerPracticeApplication.getApplication().getPrimaryStage());
         if (file == null)
             return;
-        boolean success = logic.load_file(file);
+        boolean success = logic.loadFile(file);
         if (!success) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(R.string("failed_to_load_file_alert_title"));
@@ -132,7 +132,7 @@ public class SummerPracticeController implements Initializable {
             alert.showAndWait();
         }
         try {
-            logic.start_algorithm();
+            logic.startAlgorithm();
         } catch (RuntimeException re) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(R.string("failed_to_load_file_alert_title"));
@@ -145,19 +145,19 @@ public class SummerPracticeController implements Initializable {
     }
 
     public void generateVerticesCoords(LogicInterface logic) {
-        ArrayList<LogicInterface.Node_info> node_infos = logic.getVertices();
-        double step = 2 * Math.PI / node_infos.size();
+        ArrayList<LogicInterface.VertexInfo> vertexInfos = logic.getVertices();
+        double step = 2 * Math.PI / vertexInfos.size();
         double angle = Math.PI;
-        for (int i = 0; i < node_infos.size(); ++i, angle += step)
-            verticesCoordsMap.put(node_infos.get(i).name, new Pair<>(0.9*Math.cos(angle), 0.9*Math.sin(angle)));
+        for (int i = 0; i < vertexInfos.size(); ++i, angle += step)
+            verticesCoordsMap.put(vertexInfos.get(i).name, new Pair<>(0.9*Math.cos(angle), 0.9*Math.sin(angle)));
     }
 
     public void onStartClick(ActionEvent actionEvent) {
         if (!graphExists)
             return;
         while (!logic.isAlgorithmFinished()) {
-            while (logic.get_new_edges() != null)
-                logic.next_big_step();
+            while (logic.getNewEdges() != null)
+                logic.nextBigStep();
         }
         StringBuilder sb = new StringBuilder();
 
@@ -169,7 +169,7 @@ public class SummerPracticeController implements Initializable {
                 for (int j = 0; j < n; ++j)
                     matrix.get(i).add(0);
             }
-            for (LogicInterface.Edge_info edge : logic.get_answer()) {
+            for (LogicInterface.EdgeInfo edge : logic.getAnswer()) {
                 int from = fromAZto09(edge.start), to = fromAZto09(edge.finish);
                 matrix.get(from).set(to, edge.weight);
                 matrix.get(to).set(from, edge.weight);
@@ -181,7 +181,7 @@ public class SummerPracticeController implements Initializable {
                 sb.append('\n');
             }
         } else {
-            for (LogicInterface.Edge_info edge : logic.get_answer())
+            for (LogicInterface.EdgeInfo edge : logic.getAnswer())
                 sb.append(edge.start).append(" -> ").append(edge.finish).append(" = ").append(edge.weight).append('\n');
         }
 

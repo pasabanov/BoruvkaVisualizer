@@ -2,8 +2,6 @@ package com.leti.summer_practice.logic;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Logic implements LogicInterface {
 
@@ -15,30 +13,30 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public void remove_vertex(String name) {
+    public void removeVertex(String name) {
         Graph.Node delete = graph.get_vertex(name);
         graph.delete_vertex(delete);
     }
 
     @Override
-    public void add_vertex(String name) {
+    public void addVertex(String name) {
         graph.create_vertex(name);
     }
 
     @Override
-    public void add_edge(String start, String finish, int weight) {
+    public void addEdge(String start, String finish, int weight) {
         Graph.Node start_vertex = graph.get_vertex(start);
         Graph.Node finish_vertex = graph.get_vertex(finish);
         graph.create_edge(start_vertex, finish_vertex, weight);
     }
 
     @Override
-    public void remove_edge(String start, String finish) {
+    public void removeEdge(String start, String finish) {
         graph.delete_edge(graph.get_edge(start, finish));
     }
 
     @Override
-    public Integer get_vertex_color(String name) {
+    public Integer getVertexColor(String name) {
 
         if (algorithm == null) {
             return null;
@@ -49,7 +47,7 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public Integer get_edge_color(String start, String finish) {
+    public Integer getEdgeColor(String start, String finish) {
 
         if (algorithm == null) {
             return null;
@@ -62,24 +60,24 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public ArrayList<Node_info> getVertices() {
+    public ArrayList<VertexInfo> getVertices() {
         ArrayList<Graph.Node> nodes = graph.get_vertices();
-        ArrayList<Node_info> node_infos = new ArrayList<>(nodes.size());
+        ArrayList<VertexInfo> vertexInfos = new ArrayList<>(nodes.size());
         for (Graph.Node node : nodes) {
-            Node_info node_info = new Node_info();
-            node_info.name = node.get_name();
-            node_info.color = algorithm.get_vertex_color(node);
-            node_infos.add(node_info);
+            VertexInfo vertexInfo = new VertexInfo();
+            vertexInfo.name = node.get_name();
+            vertexInfo.color = algorithm.get_vertex_color(node);
+            vertexInfos.add(vertexInfo);
         }
-        return node_infos;
+        return vertexInfos;
     }
 
     @Override
-    public ArrayList<Edge_info> getEdges() {
+    public ArrayList<EdgeInfo> getEdges() {
         ArrayList<Graph.Edge> edges = graph.get_edges();
-        ArrayList<Edge_info> edge_infos = new ArrayList<>(edges.size());
+        ArrayList<EdgeInfo> edge_infos = new ArrayList<>(edges.size());
         for (Graph.Edge edge : edges) {
-            Edge_info edge_info = new Edge_info();
+            EdgeInfo edge_info = new EdgeInfo();
             edge_info.start = edge.get_start().get_name();
             edge_info.finish = edge.get_finish().get_name();
             edge_info.weight = edge.get_weight();
@@ -90,12 +88,12 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public boolean load_file(File file) {
+    public boolean loadFile(File file) {
         return graph.read_file(file);
     }
 
     @Override
-    public void start_algorithm() {
+    public void startAlgorithm() {
         if (algorithm != null) {
             return;
         }
@@ -106,7 +104,7 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public Edge_info[] get_new_edges() {
+    public EdgeInfo[] getNewEdges() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not started");
         }
@@ -117,10 +115,10 @@ public class Logic implements LogicInterface {
             return null;
         }
 
-        Edge_info[] new_edges = new Edge_info[edges.length];
+        EdgeInfo[] new_edges = new EdgeInfo[edges.length];
 
         for (int i = 0; i < edges.length; i++) {
-            new_edges[i] = new Edge_info();
+            new_edges[i] = new EdgeInfo();
             new_edges[i].start = edges[i].get_start().get_name();
             new_edges[i].finish = edges[i].get_finish().get_name();
             new_edges[i].weight = edges[i].get_weight();
@@ -131,7 +129,7 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public void next_big_step() {
+    public void nextBigStep() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not started");
         }
@@ -145,14 +143,14 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public ArrayList<Edge_info> get_answer() {
+    public ArrayList<EdgeInfo> getAnswer() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not finished yet");
         }
         ArrayList<Graph.Edge> answer = algorithm.get_answer();
-        ArrayList<Edge_info> res = new ArrayList<>();
+        ArrayList<EdgeInfo> res = new ArrayList<>();
         for (Graph.Edge edge : answer) {
-            Edge_info new_edge = new Edge_info();
+            EdgeInfo new_edge = new EdgeInfo();
             new_edge.start = edge.get_start().get_name();
             new_edge.finish = edge.get_finish().get_name();
             new_edge.color = null;

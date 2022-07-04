@@ -349,17 +349,25 @@ public class VectorCanvas extends Pane {
 
 
     public double scale(double n) {
-        return n * zoom.get();
+        if (enableZoom.get())
+            return n * zoom.get();
+        else
+            return n;
     }
     public void scale(DoubleProperty dp) {
-        dp.set(dp.get() * zoom.get());
+        if (enableZoom.get())
+            dp.set(dp.get() * zoom.get());
     }
 
     public double descale(double n) {
-        return n / zoom.get();
+        if (enableZoom.get())
+            return n / zoom.get();
+        else
+            return n;
     }
     public void descale(DoubleProperty dp) {
-        dp.set(dp.get() / zoom.get());
+        if (enableZoom.get())
+            dp.set(dp.get() / zoom.get());
     }
 
 
@@ -372,7 +380,7 @@ public class VectorCanvas extends Pane {
             scale(line.strokeWidthProperty());
 //            line.setStrokeWidth(line.getStrokeWidth() / zoom.get());
     }
-    public void retransform(Line line) {
+    public void detransform(Line line) {
         line.setStartX(getOriginalX(line.getStartX()));
         line.setStartY(getOriginalY(line.getStartY()));
         line.setEndX(getOriginalX(line.getEndX()));
@@ -392,7 +400,7 @@ public class VectorCanvas extends Pane {
 //            circle.setStrokeWidth(circle.getStrokeWidth() / zoom.get());
         }
     }
-    public void retransform(Circle circle) {
+    public void detransform(Circle circle) {
         circle.setCenterX(getOriginalX(circle.getCenterX()));
         circle.setCenterY(getOriginalY(circle.getCenterY()));
         if (enableZoom.get()) {
@@ -415,7 +423,7 @@ public class VectorCanvas extends Pane {
 //            rectangle.setStrokeWidth(rectangle.getStrokeWidth() / zoom.get());
         }
     }
-    public void retransform(Rectangle rectangle) {
+    public void detransform(Rectangle rectangle) {
         rectangle.setX(getOriginalX(rectangle.getX()));
         rectangle.setY(getOriginalY(rectangle.getY()));
         if (enableZoom.get()) {
@@ -437,7 +445,7 @@ public class VectorCanvas extends Pane {
 //            text.setStrokeWidth(text.getStrokeWidth() / zoom.get());
         }
     }
-    public void retransform(Text text) {
+    public void detransform(Text text) {
         text.setX(getOriginalX(text.getX()));
         text.setY(getOriginalY(text.getY()));
         if (enableZoom.get()) {
