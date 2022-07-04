@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -20,9 +21,20 @@ import java.util.function.Consumer;
 // Not finished yet
 public class VectorCanvas extends Pane {
 
-    public static final double DEFAULT_ZOOM_SPEED = 1.2;
 
-    private Consumer<VectorCanvas> drawer = null;
+    public static final double DEFAULT_ZOOM_SPEED = 1.05;
+
+    public static final Consumer<VectorCanvas> DEFAULT_DRAWER = canvas -> {
+//        double width = canvas.getWidth(), height = canvas.getHeight();
+//        canvas.drawAll(new Line(0, 0, width, height), new Line(width, 0, 0, height));
+        canvas.draw(new Circle(100, 100, 100));
+        canvas.draw(new Circle(500, 100, 100, Color.RED));
+        canvas.draw(new Circle(500, 500, 100, Color.GREEN));
+        canvas.draw(new Circle(100, 500, 100, Color.ORANGE));
+    };
+
+
+    private Consumer<VectorCanvas> drawer = DEFAULT_DRAWER;
 
     private final DoubleProperty
             cameraX = new SimpleDoubleProperty(0),
@@ -61,18 +73,46 @@ public class VectorCanvas extends Pane {
             mouseX = event.getX();
             mouseY = event.getY();
         });
-        addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
-            setCameraXY(
-                    cameraX.get() + event.getX() - mouseX,
-                    cameraY.get() + event.getY() - mouseY);
+        addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
             mouseX = event.getX();
             mouseY = event.getY();
         });
-        addEventFilter(ScrollEvent.ANY, event -> {
+        addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+            setCameraXY(
+                    cameraX.get() + (mouseX - event.getX()) * zoom.get(),
+                    cameraY.get() + (mouseY - event.getY()) * zoom.get());
+            mouseX = event.getX();
+            mouseY = event.getY();
+        });
+        addEventFilter(ScrollEvent.SCROLL, event -> {
+            if (event.getDeltaY() == 0)
+                return;
             double coefficient = 1 - 1/zoomSpeed;
-            cameraX.set(cameraX.get() + event.getX() * coefficient);
-            cameraY.set(cameraY.get() + event.getY() * coefficient);
-            zoom.set(zoom.get() * zoomSpeed);
+            if (event.getDeltaY() > 0) {
+                System.out.println("------------");
+                System.out.println("eventX: " + event.getX());
+                System.out.println("coefficient: " + coefficient);
+                System.out.println("zoom: " + zoom.get());
+                System.out.println("cameraX: " + cameraX.get());
+                System.out.println("relativeX: " + (cameraX.get() + event.getX() * zoom.get()));
+                redrawLock = true;
+                cameraX.set(cameraX.get() + event.getX() * zoom.get() * coefficient);
+                cameraY.set(cameraY.get() + event.getY() * zoom.get() * coefficient);
+                zoom.set(zoom.get() * zoomSpeed);
+                redrawLock = false;
+                redraw();
+                System.out.println("...");
+                System.out.println("zoom: " + zoom.get());
+                System.out.println("cameraX: " + cameraX.get());
+                System.out.println("relativeX: " + (cameraX.get() + event.getX() * zoom.get()));
+            } else {
+                redrawLock = true;
+                zoom.set(zoom.get() / zoomSpeed);
+                cameraX.set(cameraX.get() - event.getX() * zoom.get() * coefficient);
+                cameraY.set(cameraY.get() - event.getY() * zoom.get() * coefficient);
+                redrawLock = false;
+                redraw();
+            }
         });
     }
 
@@ -275,17 +315,17 @@ public class VectorCanvas extends Pane {
      * Coords relative to camera position and zoom (if they are enabled) from original coords.
      */
     public double getCanvasX(double x) {
+        if (enableZoom.get())
+            x *= zoom.get();
         if (enableCameraCoords.get())
             x -= cameraX.get();
-        if (enableZoom.get())
-            x /= zoom.get();
         return x;
     }
     public double getCanvasY(double y) {
+        if (enableZoom.get())
+            y *= zoom.get();
         if (enableCameraCoords.get())
             y -= cameraY.get();
-        if (enableZoom.get())
-            y /= zoom.get();
         return y;
     }
 
@@ -293,18 +333,33 @@ public class VectorCanvas extends Pane {
      * Original coords from relative to camera position and zoom (if they are enabled).
      */
     public double getOriginalX(double x) {
-        if (enableZoom.get())
-            x *= zoom.get();
         if (enableCameraCoords.get())
             x += cameraX.get();
+        if (enableZoom.get())
+            x /= zoom.get();
         return x;
     }
     public double getOriginalY(double y) {
-        if (enableZoom.get())
-            y *= zoom.get();
         if (enableCameraCoords.get())
             y += cameraY.get();
+        if (enableZoom.get())
+            y /= zoom.get();
         return y;
+    }
+
+
+    public double scale(double n) {
+        return n * zoom.get();
+    }
+    public void scale(DoubleProperty dp) {
+        dp.set(dp.get() * zoom.get());
+    }
+
+    public double descale(double n) {
+        return n / zoom.get();
+    }
+    public void descale(DoubleProperty dp) {
+        dp.set(dp.get() / zoom.get());
     }
 
 
@@ -314,7 +369,8 @@ public class VectorCanvas extends Pane {
         line.setEndX(getCanvasX(line.getEndX()));
         line.setEndY(getCanvasY(line.getEndY()));
         if (enableZoom.get())
-            line.setStrokeWidth(line.getStrokeWidth() / zoom.get());
+            scale(line.strokeWidthProperty());
+//            line.setStrokeWidth(line.getStrokeWidth() / zoom.get());
     }
     public void retransform(Line line) {
         line.setStartX(getOriginalX(line.getStartX()));
@@ -322,23 +378,28 @@ public class VectorCanvas extends Pane {
         line.setEndX(getOriginalX(line.getEndX()));
         line.setEndY(getOriginalY(line.getEndY()));
         if (enableZoom.get())
-            line.setStrokeWidth(line.getStrokeWidth() * zoom.get());
+            descale(line.strokeWidthProperty());
+//            line.setStrokeWidth(line.getStrokeWidth() * zoom.get());
     }
 
     public void transform(Circle circle) {
         circle.setCenterX(getCanvasX(circle.getCenterX()));
         circle.setCenterY(getCanvasY(circle.getCenterY()));
         if (enableZoom.get()) {
-            circle.setRadius(circle.getRadius() / zoom.get());
-            circle.setStrokeWidth(circle.getStrokeWidth() / zoom.get());
+            scale(circle.radiusProperty());
+            scale(circle.strokeWidthProperty());
+//            circle.setRadius(circle.getRadius() / zoom.get());
+//            circle.setStrokeWidth(circle.getStrokeWidth() / zoom.get());
         }
     }
     public void retransform(Circle circle) {
         circle.setCenterX(getOriginalX(circle.getCenterX()));
         circle.setCenterY(getOriginalY(circle.getCenterY()));
         if (enableZoom.get()) {
-            circle.setRadius(circle.getRadius() * zoom.get());
-            circle.setStrokeWidth(circle.getStrokeWidth() * zoom.get());
+            descale(circle.radiusProperty());
+            descale(circle.strokeWidthProperty());
+//            circle.setRadius(circle.getRadius() * zoom.get());
+//            circle.setStrokeWidth(circle.getStrokeWidth() * zoom.get());
         }
     }
 
@@ -346,18 +407,24 @@ public class VectorCanvas extends Pane {
         rectangle.setX(getCanvasX(rectangle.getX()));
         rectangle.setY(getCanvasY(rectangle.getY()));
         if (enableZoom.get()) {
-            rectangle.setWidth(rectangle.getWidth() / zoom.get());
-            rectangle.setHeight(rectangle.getHeight() / zoom.get());
-            rectangle.setStrokeWidth(rectangle.getStrokeWidth() / zoom.get());
+            scale(rectangle.widthProperty());
+            scale(rectangle.heightProperty());
+            scale(rectangle.strokeWidthProperty());
+//            rectangle.setWidth(rectangle.getWidth() / zoom.get());
+//            rectangle.setHeight(rectangle.getHeight() / zoom.get());
+//            rectangle.setStrokeWidth(rectangle.getStrokeWidth() / zoom.get());
         }
     }
     public void retransform(Rectangle rectangle) {
         rectangle.setX(getOriginalX(rectangle.getX()));
         rectangle.setY(getOriginalY(rectangle.getY()));
         if (enableZoom.get()) {
-            rectangle.setWidth(rectangle.getWidth() * zoom.get());
-            rectangle.setHeight(rectangle.getHeight() * zoom.get());
-            rectangle.setStrokeWidth(rectangle.getStrokeWidth() * zoom.get());
+            descale(rectangle.widthProperty());
+            descale(rectangle.heightProperty());
+            descale(rectangle.strokeWidthProperty());
+//            rectangle.setWidth(rectangle.getWidth() * zoom.get());
+//            rectangle.setHeight(rectangle.getHeight() * zoom.get());
+//            rectangle.setStrokeWidth(rectangle.getStrokeWidth() * zoom.get());
         }
     }
 
@@ -365,16 +432,19 @@ public class VectorCanvas extends Pane {
         text.setX(getCanvasX(text.getX()));
         text.setY(getCanvasY(text.getY()));
         if (enableZoom.get()) {
-            text.setFont(Font.font(text.getFont().getFamily(), text.getFont().getSize() / zoom.get()));
-            text.setStrokeWidth(text.getStrokeWidth() / zoom.get());
+            text.setFont(Font.font(text.getFont().getFamily(), scale(text.getFont().getSize())));
+            scale(text.strokeWidthProperty());
+//            text.setStrokeWidth(text.getStrokeWidth() / zoom.get());
         }
     }
     public void retransform(Text text) {
         text.setX(getOriginalX(text.getX()));
         text.setY(getOriginalY(text.getY()));
         if (enableZoom.get()) {
-            text.setFont(Font.font(text.getFont().getFamily(), text.getFont().getSize() * zoom.get()));
-            text.setStrokeWidth(text.getStrokeWidth() * zoom.get());
+            text.setFont(Font.font(text.getFont().getFamily(), descale(text.getFont().getSize())));
+            descale(text.strokeWidthProperty());
+//            text.setFont(Font.font(text.getFont().getFamily(), text.getFont().getSize() * zoom.get()));
+//            text.setStrokeWidth(text.getStrokeWidth() * zoom.get());
         }
     }
 
