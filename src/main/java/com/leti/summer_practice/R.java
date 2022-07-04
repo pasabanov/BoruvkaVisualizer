@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -17,6 +18,9 @@ public final class R {
     private static final String BUNDLES_PATH = "com/leti/summer_practice/";
     private static final String MAIN_STRINGS_BUNDLE_NAME = "strings";
     private static final String MAIN_STRINGS_BUNDLE_PATH = BUNDLES_PATH + MAIN_STRINGS_BUNDLE_NAME;
+
+    private static final String DEFAULT_NOT_FOUND_STRING = "%string_not_found%";
+
 
     private static ResourceBundle mainStringsBundle = ResourceBundle.getBundle(MAIN_STRINGS_BUNDLE_PATH);
 
@@ -70,7 +74,12 @@ public final class R {
      * @return required string from bundle.
      */
     public static String string(String key) {
-        return mainStringsBundle.getString(key);
+        try {
+            return mainStringsBundle.getString(key);
+        } catch (NullPointerException | MissingResourceException | ClassCastException e) {
+            e.printStackTrace();
+            return DEFAULT_NOT_FOUND_STRING;
+        }
     }
 
     /**
