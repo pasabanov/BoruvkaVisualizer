@@ -39,7 +39,7 @@ public interface LogicInterface {
 
     Logic.Edge_info[] get_new_edges();
 
-    boolean next_big_step();
+    void next_big_step();
 
     boolean isAlgorithmFinished();
 

@@ -17,6 +17,36 @@ public class Graph {
         max_index = 0;
     }
 
+    public int get_vertex_count() {
+        return adress.size();
+    }
+
+    public boolean is_connected() {
+        Map<Graph.Node, Boolean> closed = new HashMap<>();
+        Set<String> entry = adress.keySet();
+        Iterator<String> iter = entry.iterator();
+        if (!iter.hasNext()) {
+            return true;
+        }
+        Node start_vertex = new Node(iter.next());
+        int vertex_count = dfs(closed, start_vertex);
+        return vertex_count == get_vertex_count();
+    }
+
+
+    private int dfs(Map<Graph.Node, Boolean> closed, Graph.Node current) {
+        closed.put(current, true);
+        int res = 1;
+        ArrayList<Graph.Node> neighbours = get_neighbours(current);
+        for (int i = 0; i < neighbours.size(); i++) {
+            if (!closed.containsKey(neighbours.get(i))) {
+                res = res+dfs(closed, neighbours.get(i));
+            }
+        }
+        return res;
+    }
+
+
     private static ArrayList<Integer> get_row_values(String line) {
         ArrayList<Integer> res = new ArrayList<>();
         String[] split = line.split(" +");
@@ -101,7 +131,7 @@ public class Graph {
         } catch (IOException e) {
             System.out.println("РћС€РёР±РєР° РїСЂРё РѕС‚РєСЂС‹С‚РёРё С„Р°Р№Р»Р°");
             return false;
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("РћС€РёР±РєР° РІ С‡РёСЃР»Р°С… РјР°С‚СЂРёС†С‹");
             return false;
         }
