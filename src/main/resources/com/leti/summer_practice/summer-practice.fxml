@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.leti.summer_practice.gui.prog.GraphCanvas?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import com.leti.summer_practice.gui.prog.GraphCanvas?>
-
 <?import com.leti.summer_practice.gui.lib.VectorCanvas?>
+
 <BorderPane maxHeight="-Infinity"
             maxWidth="-Infinity"
             minHeight="-Infinity"
             minWidth="-Infinity"
             prefHeight="400.0"
-            prefWidth="600.0"
+            prefWidth="800.0"
             xmlns="http://javafx.com/javafx/18"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.leti.summer_practice.gui.prog.SummerPracticeController">
@@ -21,12 +19,11 @@
 
       <SplitPane dividerPositions="0.9"
                  orientation="VERTICAL"
-                 prefHeight="200.0"
-                 prefWidth="160.0"
+                 prefHeight="400.0"
+                 prefWidth="600.0"
                  BorderPane.alignment="CENTER">
 
-         <GraphCanvas fx:id="canvas"/>
-<!--         <VectorCanvas/>-->
+         <VectorCanvas fx:id="canvas"/>
 
          <TextArea fx:id="logTextArea"
                    editable="false"

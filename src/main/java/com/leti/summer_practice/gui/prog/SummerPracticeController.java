@@ -1,6 +1,7 @@
 package com.leti.summer_practice.gui.prog;
 
 import com.leti.summer_practice.R;
+import com.leti.summer_practice.gui.lib.VectorCanvas;
 import com.leti.summer_practice.logic.Logic;
 import com.leti.summer_practice.logic.LogicInterface;
 import javafx.event.ActionEvent;
@@ -21,8 +22,18 @@ import java.util.*;
 
 public class SummerPracticeController implements Initializable {
 
+
+    private static final double CANVAS_WIDTH = 100;
+    private static final double CANVAS_HEIGHT = 100;
+
+    private static final double CANVAS_DEFAULT_CAMERA_X = -50;
+    private static final double CANVAS_DEFAULT_CAMERA_Y = -50;
+
+    private static final double CANVAS_DEFAULT_ZOOM = 1;
+
+
     @FXML
-    public GraphCanvas canvas;
+    public VectorCanvas canvas;
     @FXML
     public TextArea logTextArea;
 
@@ -51,37 +62,9 @@ public class SummerPracticeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        canvas.setDrawer(() -> {
-//
-//            double width = canvas.getWidth(), height = canvas.getHeight();
-//            double w2 = width/2, h2 = height/2;
-//
-//            GraphicsContext gc = canvas.getGraphicsContext2D();
-//            gc.setStroke(Color.BLACK);
-//            gc.setFill(Color.YELLOW);
-//
-////            ArrayList<Pair<Double,Double>> verticesCoords = graphDataGUI.getVerticesCoords();
-////            for (int i = 0; i < verticesCoords.size(); ++i) {
-////                Pair<Double,Double> coords = verticesCoords.get(i);
-////                double x = w2 + coords.getKey()*w2*0.8;
-////                double y = h2 + coords.getValue()*h2*0.8;
-////                gc.fillOval(x - 10, y - 10, 20, 20);
-////                gc.fillRect(0 - 10, 0 - 10, 20, 20);
-////                gc.strokeText("" + (i+1), x - 5, y + 5);
-////            }
-//
-////            for (int i = 0; i < verticesCoords.size(); ++i) {
-////                Pair<Double,Double> coords = verticesCoords.get(i);
-////                double x = w2 + coords.getKey()*w2*0.8;
-////                double y = h2 + coords.getValue()*h2*0.8;
-////                Circle circle = new Circle(x, y, 20);
-////                circle.setFill(Color.YELLOW);
-////                circle.setOnMouseClicked(event -> System.out.println("circle clicked"));
-////                Text text = new Text(circle.getCenterX(), circle.getCenterY(), "" + (i+1));
-////                text.setOnMouseClicked(event -> System.out.println("text clicked"));
-////                pane.getChildren().addAll(circle, text);
-////            }
-//        });
+
+        canvas.setCameraXY(CANVAS_DEFAULT_CAMERA_X, CANVAS_DEFAULT_CAMERA_Y);
+        canvas.setZoom(CANVAS_DEFAULT_ZOOM / (CANVAS_WIDTH + CANVAS_HEIGHT) * (1200));
 
         canvas.setDrawer(graphCanvas -> {
             Map<String, Pair<Double,Double>> verticesCoordsMap = this.verticesCoordsMap;
@@ -90,30 +73,30 @@ public class SummerPracticeController implements Initializable {
             for (LogicInterface.EdgeInfo edge : logic.getEdges()) {
                 Pair<Double,Double> startCoords = verticesCoordsMap.get(edge.start),
                         finishCoords = verticesCoordsMap.get(edge.finish);
-                double startX = graphCanvas.getRelativeX(startCoords.getKey());
-                double startY = graphCanvas.getRelativeY(startCoords.getValue());
-                double finishX = graphCanvas.getRelativeX(finishCoords.getKey());
-                double finishY = graphCanvas.getRelativeY(finishCoords.getValue());
+                double startX = (startCoords.getKey()) * CANVAS_WIDTH / 2;
+                double startY = (startCoords.getValue()) * CANVAS_HEIGHT / 2;
+                double finishX = (finishCoords.getKey()) * CANVAS_WIDTH / 2;
+                double finishY = (finishCoords.getValue()) * CANVAS_HEIGHT / 2;
                 Line line = new Line(startX, startY, finishX, finishY);
-                line.setStrokeWidth(2);
+                line.setStrokeWidth(2 / canvas.getZoom());
                 line.setStroke(Color.GREEN);
-                graphCanvas.getChildren().add(line);
+                canvas.draw(line);
                 double textX = (startX + finishX) / 2;
                 double textY = (startY + finishY) / 2;
                 Text text = new Text(textX, textY, "" + edge.weight);
-                text.setFont(Font.font(16));
-                graphCanvas.getChildren().add(text);
+                text.setFont(Font.font(16 / canvas.getZoom()));
+                canvas.draw(text);
             }
             for (String name : verticesCoordsMap.keySet()) {
                 Pair<Double,Double> coords = verticesCoordsMap.get(name);
-                double x = graphCanvas.getRelativeX(coords.getKey());
-                double y = graphCanvas.getRelativeY(coords.getValue());
-                Circle circle = new Circle(x, y, 0.08 * (graphCanvas.getWidth() + graphCanvas.getHeight())/2);
+                double x = (coords.getKey()) * CANVAS_WIDTH / 2;
+                double y = (coords.getValue()) * CANVAS_HEIGHT / 2;
+                Circle circle = new Circle(x, y, 20 / canvas.getZoom());
                 circle.setFill(Color.ORANGE);
-                graphCanvas.getChildren().add(circle);
+                canvas.draw(circle);
                 Text text = new Text(x, y, name);
-                text.setFont(Font.font(16));
-                graphCanvas.getChildren().add(text);
+                text.setFont(Font.font(16 / canvas.getZoom()));
+                canvas.draw(text);
             }
         });
     }

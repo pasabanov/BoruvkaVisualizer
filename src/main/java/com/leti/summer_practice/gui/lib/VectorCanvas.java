@@ -17,12 +17,18 @@ import javafx.scene.text.Text;
 
 import java.util.function.Consumer;
 
-// TODO
-// Not finished yet
 public class VectorCanvas extends Pane {
 
 
-    public static final double DEFAULT_ZOOM_SPEED = 1.05;
+    public enum OnResizeAction {
+        CHANGE_CAMERA_AND_ZOOM,
+        CHANGE_CAMERA,
+        CHANGE_ZOOM,
+        DO_NOTHING
+    }
+
+
+    public static final double DEFAULT_ZOOM_SPEED = 1.1;
 
     public static final Consumer<VectorCanvas> DEFAULT_DRAWER = canvas -> {
 //        double width = canvas.getWidth(), height = canvas.getHeight();
@@ -31,6 +37,11 @@ public class VectorCanvas extends Pane {
         canvas.draw(new Circle(500, 100, 100, Color.RED));
         canvas.draw(new Circle(500, 500, 100, Color.GREEN));
         canvas.draw(new Circle(100, 500, 100, Color.ORANGE));
+        canvas.draw(new Circle(
+                canvas.getCameraX() + canvas.getWidth() / 2 / canvas.getZoom(),
+                canvas.getCameraY() + canvas.getHeight() / 2 / canvas.getZoom(),
+                2 / canvas.getZoom(),
+                Color.RED));
     };
 
 
@@ -39,7 +50,8 @@ public class VectorCanvas extends Pane {
     private final DoubleProperty
             cameraX = new SimpleDoubleProperty(0),
             cameraY = new SimpleDoubleProperty(0);
-    private final DoubleProperty zoom = new SimpleDoubleProperty(1);
+    private final DoubleProperty
+            zoom = new SimpleDoubleProperty(1);
 
     private final BooleanProperty enableCameraCoords = new SimpleBooleanProperty(true);
     private final BooleanProperty enableZoom = new SimpleBooleanProperty(true);
@@ -47,73 +59,94 @@ public class VectorCanvas extends Pane {
     private final BooleanProperty lockCamera = new SimpleBooleanProperty(false);
     private final BooleanProperty lockZoom = new SimpleBooleanProperty(false);
 
+    private OnResizeAction onResizeAction = OnResizeAction.CHANGE_CAMERA_AND_ZOOM;
+
     private double mouseX, mouseY;
     private double zoomSpeed = DEFAULT_ZOOM_SPEED;
 
-    private boolean redrawLock = false;
+    // set lock before initialization
+    private boolean redrawLock = true;
 
 
     public VectorCanvas() {
+        this(0, 0, 1);
+    }
+
+    public VectorCanvas(double initZoom) {
+        this(0, 0, initZoom);
+    }
+
+    public VectorCanvas(double initCameraX, double initCameraY) {
+        this(initCameraX, initCameraY, 1);
+    }
+
+    public VectorCanvas(double initCameraX, double initCameraY, double initZoom) {
+
+        setCameraXY(initCameraX, initCameraY);
+        setZoom(initZoom);
 
         InvalidationListener listener = observable -> {
             if (!redrawLock)
                 redraw();
         };
-        widthProperty().addListener(listener);
-        heightProperty().addListener(listener);
+
         cameraXProperty().addListener(listener);
         cameraYProperty().addListener(listener);
         zoomProperty().addListener(listener);
         enableCameraCoordsProperty().addListener(listener);
         enableZoomProperty().addListener(listener);
 
-        // TODO
-        // NOT TESTED YET
-        addEventFilter(MouseEvent.MOUSE_ENTERED_TARGET, event -> {
+        widthProperty().addListener((observable, oldValue, newValue) -> {
+            onBeforeResize((double) oldValue, getHeight(), (double) newValue, getHeight());
+            listener.invalidated(observable);
+        });
+        heightProperty().addListener((observable, oldValue, newValue) -> {
+            onBeforeResize(getWidth(), (double) newValue, getWidth(), (double) newValue);
+            listener.invalidated(observable);
+        });
+
+        addEventHandler(MouseEvent.MOUSE_ENTERED_TARGET, event -> {
             mouseX = event.getX();
             mouseY = event.getY();
         });
-        addEventFilter(MouseEvent.MOUSE_MOVED, event -> {
+        addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
             mouseX = event.getX();
             mouseY = event.getY();
         });
-        addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+        addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
+            if (isLockCamera())
+                return;
             setCameraXY(
-                    cameraX.get() + (mouseX - event.getX()) * zoom.get(),
-                    cameraY.get() + (mouseY - event.getY()) * zoom.get());
+                    cameraX.get() + (mouseX - event.getX()) / zoom.get(),
+                    cameraY.get() + (mouseY - event.getY()) / zoom.get());
             mouseX = event.getX();
             mouseY = event.getY();
         });
-        addEventFilter(ScrollEvent.SCROLL, event -> {
+        addEventHandler(ScrollEvent.SCROLL, event -> {
+            if (isLockZoom())
+                return;
             if (event.getDeltaY() == 0)
                 return;
             double coefficient = 1 - 1/zoomSpeed;
+            boolean oldRedrawLock = redrawLock;
+            redrawLock = true;
             if (event.getDeltaY() > 0) {
-                System.out.println("------------");
-                System.out.println("eventX: " + event.getX());
-                System.out.println("coefficient: " + coefficient);
-                System.out.println("zoom: " + zoom.get());
-                System.out.println("cameraX: " + cameraX.get());
-                System.out.println("relativeX: " + (cameraX.get() + event.getX() * zoom.get()));
-                redrawLock = true;
-                cameraX.set(cameraX.get() + event.getX() * zoom.get() * coefficient);
-                cameraY.set(cameraY.get() + event.getY() * zoom.get() * coefficient);
+                cameraX.set(cameraX.get() + event.getX() / zoom.get() * coefficient);
+                cameraY.set(cameraY.get() + event.getY() / zoom.get() * coefficient);
                 zoom.set(zoom.get() * zoomSpeed);
-                redrawLock = false;
-                redraw();
-                System.out.println("...");
-                System.out.println("zoom: " + zoom.get());
-                System.out.println("cameraX: " + cameraX.get());
-                System.out.println("relativeX: " + (cameraX.get() + event.getX() * zoom.get()));
             } else {
-                redrawLock = true;
                 zoom.set(zoom.get() / zoomSpeed);
-                cameraX.set(cameraX.get() - event.getX() * zoom.get() * coefficient);
-                cameraY.set(cameraY.get() - event.getY() * zoom.get() * coefficient);
-                redrawLock = false;
-                redraw();
+                cameraX.set(cameraX.get() - event.getX() / zoom.get() * coefficient);
+                cameraY.set(cameraY.get() - event.getY() / zoom.get() * coefficient);
             }
+            redrawLock = oldRedrawLock;
+            if (!redrawLock)
+                redraw();
         });
+
+        // unset lock after initialization
+        redrawLock = false;
+        redraw();
     }
 
 
@@ -172,11 +205,15 @@ public class VectorCanvas extends Pane {
      * Redraws canvas maximum 1 time, even if both cameraX and cameraY changed.
      */
     public void setCameraXY(double cameraX, double cameraY) {
-        if (getCameraX() != cameraX && getCameraY() != cameraY)
-            redrawLock = true;
+        if (cameraX == getCameraX() && cameraY == getCameraY())
+            return;
+        boolean oldRedrawLock = redrawLock;
+        redrawLock = true;
         setCameraX(cameraX);
-        redrawLock = false;
         setCameraY(cameraY);
+        redrawLock = oldRedrawLock;
+        if (!redrawLock)
+            redraw();
     }
 
 
@@ -262,6 +299,14 @@ public class VectorCanvas extends Pane {
     }
 
 
+    public OnResizeAction getOnResizeAction() {
+        return onResizeAction;
+    }
+    public void setOnResizeAction(OnResizeAction onResizeAction) {
+        this.onResizeAction = onResizeAction;
+    }
+
+
     /**
      * Getter and setter for zoom speed.
      */
@@ -298,11 +343,72 @@ public class VectorCanvas extends Pane {
      */
     @Override
     public void resize(double width, double height) {
-        if (getWidth() != width && getHeight() != height)
-            redrawLock = true;
+
+        double oldWidth = getWidth(), oldHeight = getHeight();
+
+        if (width == oldWidth && height == oldHeight)
+            return;
+
+        boolean oldRedrawLock = redrawLock;
+        redrawLock = true;
+
+        onBeforeResize(oldWidth, oldHeight, width, height);
+
+        OnResizeAction oldAction = getOnResizeAction();
+        setOnResizeAction(OnResizeAction.DO_NOTHING);
+
         setWidth(width);
-        redrawLock = false;
         setHeight(height);
+
+        setOnResizeAction(oldAction);
+
+        redrawLock = oldRedrawLock;
+        if (!redrawLock)
+            redraw();
+    }
+
+
+    /**
+     * Method called before a resize.
+     */
+    public void onBeforeResize(double oldWidth, double oldHeight, double newWidth, double newHeight) {
+
+        if (onResizeAction == OnResizeAction.DO_NOTHING)
+            return;
+
+        double oldMin = Math.min(oldWidth, oldHeight);
+        double newMin = Math.min(newWidth, newHeight);
+
+        if (oldMin == 0 || newMin == 0)
+            return;
+
+        boolean oldRedrawLock = redrawLock;
+        redrawLock = true;
+
+        switch (onResizeAction) {
+            case CHANGE_CAMERA_AND_ZOOM -> {
+                double zoomChange = newMin / oldMin;
+                double centerX = cameraX.get() + oldWidth / 2 / zoom.get();
+                double centerY = cameraY.get() + oldHeight / 2 / zoom.get();
+                setZoom(getZoom() * zoomChange);
+                double newCameraX = centerX - newWidth / 2 / zoom.get();
+                double newCameraY = centerY - newHeight / 2 / zoom.get();
+                setCameraXY(newCameraX, newCameraY);
+            }
+            case CHANGE_CAMERA -> {
+                double centerX = cameraX.get() + oldWidth / 2 / zoom.get();
+                double centerY = cameraY.get() + oldHeight / 2 / zoom.get();
+                double newCameraX = centerX - newWidth / 2 / zoom.get();
+                double newCameraY = centerY - newHeight / 2 / zoom.get();
+                setCameraXY(newCameraX, newCameraY);
+            }
+            case CHANGE_ZOOM -> {
+                double zoomChange = newMin / oldMin;
+                setZoom(getZoom() * zoomChange);
+            }
+        }
+
+        redrawLock = oldRedrawLock;
     }
 
 
@@ -315,17 +421,17 @@ public class VectorCanvas extends Pane {
      * Coords relative to camera position and zoom (if they are enabled) from original coords.
      */
     public double getCanvasX(double x) {
-        if (enableZoom.get())
-            x *= zoom.get();
         if (enableCameraCoords.get())
             x -= cameraX.get();
+        if (enableZoom.get())
+            x *= zoom.get();
         return x;
     }
     public double getCanvasY(double y) {
-        if (enableZoom.get())
-            y *= zoom.get();
         if (enableCameraCoords.get())
             y -= cameraY.get();
+        if (enableZoom.get())
+            y *= zoom.get();
         return y;
     }
 
@@ -333,17 +439,17 @@ public class VectorCanvas extends Pane {
      * Original coords from relative to camera position and zoom (if they are enabled).
      */
     public double getOriginalX(double x) {
-        if (enableCameraCoords.get())
-            x += cameraX.get();
         if (enableZoom.get())
             x /= zoom.get();
+        if (enableCameraCoords.get())
+            x += cameraX.get();
         return x;
     }
     public double getOriginalY(double y) {
-        if (enableCameraCoords.get())
-            y += cameraY.get();
         if (enableZoom.get())
             y /= zoom.get();
+        if (enableCameraCoords.get())
+            y += cameraY.get();
         return y;
     }
 
@@ -378,7 +484,6 @@ public class VectorCanvas extends Pane {
         line.setEndY(getCanvasY(line.getEndY()));
         if (enableZoom.get())
             scale(line.strokeWidthProperty());
-//            line.setStrokeWidth(line.getStrokeWidth() / zoom.get());
     }
     public void detransform(Line line) {
         line.setStartX(getOriginalX(line.getStartX()));
@@ -387,7 +492,6 @@ public class VectorCanvas extends Pane {
         line.setEndY(getOriginalY(line.getEndY()));
         if (enableZoom.get())
             descale(line.strokeWidthProperty());
-//            line.setStrokeWidth(line.getStrokeWidth() * zoom.get());
     }
 
     public void transform(Circle circle) {
@@ -396,8 +500,6 @@ public class VectorCanvas extends Pane {
         if (enableZoom.get()) {
             scale(circle.radiusProperty());
             scale(circle.strokeWidthProperty());
-//            circle.setRadius(circle.getRadius() / zoom.get());
-//            circle.setStrokeWidth(circle.getStrokeWidth() / zoom.get());
         }
     }
     public void detransform(Circle circle) {
@@ -406,8 +508,6 @@ public class VectorCanvas extends Pane {
         if (enableZoom.get()) {
             descale(circle.radiusProperty());
             descale(circle.strokeWidthProperty());
-//            circle.setRadius(circle.getRadius() * zoom.get());
-//            circle.setStrokeWidth(circle.getStrokeWidth() * zoom.get());
         }
     }
 
@@ -418,9 +518,6 @@ public class VectorCanvas extends Pane {
             scale(rectangle.widthProperty());
             scale(rectangle.heightProperty());
             scale(rectangle.strokeWidthProperty());
-//            rectangle.setWidth(rectangle.getWidth() / zoom.get());
-//            rectangle.setHeight(rectangle.getHeight() / zoom.get());
-//            rectangle.setStrokeWidth(rectangle.getStrokeWidth() / zoom.get());
         }
     }
     public void detransform(Rectangle rectangle) {
@@ -430,9 +527,6 @@ public class VectorCanvas extends Pane {
             descale(rectangle.widthProperty());
             descale(rectangle.heightProperty());
             descale(rectangle.strokeWidthProperty());
-//            rectangle.setWidth(rectangle.getWidth() * zoom.get());
-//            rectangle.setHeight(rectangle.getHeight() * zoom.get());
-//            rectangle.setStrokeWidth(rectangle.getStrokeWidth() * zoom.get());
         }
     }
 
@@ -442,7 +536,6 @@ public class VectorCanvas extends Pane {
         if (enableZoom.get()) {
             text.setFont(Font.font(text.getFont().getFamily(), scale(text.getFont().getSize())));
             scale(text.strokeWidthProperty());
-//            text.setStrokeWidth(text.getStrokeWidth() / zoom.get());
         }
     }
     public void detransform(Text text) {
@@ -451,8 +544,6 @@ public class VectorCanvas extends Pane {
         if (enableZoom.get()) {
             text.setFont(Font.font(text.getFont().getFamily(), descale(text.getFont().getSize())));
             descale(text.strokeWidthProperty());
-//            text.setFont(Font.font(text.getFont().getFamily(), text.getFont().getSize() * zoom.get()));
-//            text.setStrokeWidth(text.getStrokeWidth() * zoom.get());
         }
     }
 
