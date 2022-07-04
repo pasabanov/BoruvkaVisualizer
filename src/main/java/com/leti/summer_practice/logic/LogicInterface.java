@@ -41,5 +41,7 @@ public interface LogicInterface {
 
     boolean next_big_step();
 
+    boolean isAlgorithmFinished();
+
     ArrayList<Edge_info> get_answer();
 }

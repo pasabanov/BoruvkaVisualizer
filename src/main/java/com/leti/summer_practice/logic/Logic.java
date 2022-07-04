@@ -12,25 +12,30 @@ public class Logic implements LogicInterface {
         graph = new Graph();
     }
 
+    @Override
     public void remove_vertex(String name) {
         Graph.Node delete = graph.get_vertex(name);
         graph.delete_vertex(delete);
     }
 
+    @Override
     public void add_vertex(String name) {
         graph.create_vertex(name);
     }
 
+    @Override
     public void add_edge(String start, String finish, int weight) {
         Graph.Node start_vertex = graph.get_vertex(start);
         Graph.Node finish_vertex = graph.get_vertex(finish);
         graph.create_edge(start_vertex, finish_vertex, weight);
     }
 
+    @Override
     public void remove_edge(String start, String finish) {
         graph.delete_edge(graph.get_edge(start, finish));
     }
 
+    @Override
     public Integer get_vertex_color(String name) {
 
         if (algorithm == null) {
@@ -41,6 +46,7 @@ public class Logic implements LogicInterface {
         return algorithm.get_vertex_color(vertex);
     }
 
+    @Override
     public Integer get_edge_color(String start, String finish) {
 
         if (algorithm == null) {
@@ -53,7 +59,6 @@ public class Logic implements LogicInterface {
         return algorithm.get_edge_color(start_vertex, finish_vertex);
     }
 
-    // written by Peter
     @Override
     public ArrayList<Node_info> getVertices() {
         ArrayList<Graph.Node> nodes = graph.get_vertices();
@@ -67,7 +72,6 @@ public class Logic implements LogicInterface {
         return node_infos;
     }
 
-    // written by Peter
     @Override
     public ArrayList<Edge_info> getEdges() {
         ArrayList<Graph.Edge> edges = graph.get_edges();
@@ -83,10 +87,12 @@ public class Logic implements LogicInterface {
         return edge_infos;
     }
 
+    @Override
     public boolean load_file(File file) {
         return graph.read_file(file);
     }
 
+    @Override
     public void start_algorithm() {
         if (algorithm != null) {
 //            throw new RuntimeException("Algorithm was already started");
@@ -94,6 +100,7 @@ public class Logic implements LogicInterface {
         algorithm = new Algorithm(graph);
     }
 
+    @Override
     public Edge_info[] get_new_edges() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not started");
@@ -118,14 +125,21 @@ public class Logic implements LogicInterface {
         return new_edges;
     }
 
-    public boolean next_big_step() {
+    @Override
+    public void next_big_step() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not started");
         }
 
-        return algorithm.next_step();
+        algorithm.next_step();
     }
 
+    @Override
+    public boolean isAlgorithmFinished() {
+        return algorithm.isFinished();
+    }
+
+    @Override
     public ArrayList<Edge_info> get_answer() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not finished yet");
