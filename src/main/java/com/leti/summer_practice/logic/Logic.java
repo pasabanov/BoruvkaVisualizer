@@ -2,6 +2,8 @@ package com.leti.summer_practice.logic;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Logic implements LogicInterface {
 
@@ -95,7 +97,10 @@ public class Logic implements LogicInterface {
     @Override
     public void start_algorithm() {
         if (algorithm != null) {
-//            throw new RuntimeException("Algorithm was already started");
+            return;
+        }
+        if (!graph.is_connected()) {
+            throw new RuntimeException("Graph is not connected");
         }
         algorithm = new Algorithm(graph);
     }
@@ -156,5 +161,6 @@ public class Logic implements LogicInterface {
         }
         return res;
     }
+
 }
 
