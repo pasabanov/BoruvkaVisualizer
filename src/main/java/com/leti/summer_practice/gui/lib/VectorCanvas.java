@@ -1,26 +1,48 @@
 package com.leti.summer_practice.gui.lib;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.function.Consumer;
 
+// TODO
+// Not finished yet
 public class VectorCanvas extends Pane {
+
+    public static final double DEFAULT_ZOOM_SPEED = 1.2;
 
     private Consumer<VectorCanvas> drawer = null;
 
     private final DoubleProperty
             cameraX = new SimpleDoubleProperty(0),
             cameraY = new SimpleDoubleProperty(0);
-    private final DoubleProperty
-            zoom = new SimpleDoubleProperty(1);
+    private final DoubleProperty zoom = new SimpleDoubleProperty(1);
+
+    private final BooleanProperty enableCameraCoords = new SimpleBooleanProperty(true);
+    private final BooleanProperty enableZoom = new SimpleBooleanProperty(true);
+
+    private final BooleanProperty lockCamera = new SimpleBooleanProperty(false);
+    private final BooleanProperty lockZoom = new SimpleBooleanProperty(false);
+
+    private double mouseX, mouseY;
+    private double zoomSpeed = DEFAULT_ZOOM_SPEED;
 
     private boolean redrawLock = false;
 
 
     public VectorCanvas() {
+
         InvalidationListener listener = observable -> {
             if (!redrawLock)
                 redraw();
@@ -30,6 +52,28 @@ public class VectorCanvas extends Pane {
         cameraXProperty().addListener(listener);
         cameraYProperty().addListener(listener);
         zoomProperty().addListener(listener);
+        enableCameraCoordsProperty().addListener(listener);
+        enableZoomProperty().addListener(listener);
+
+        // TODO
+        // NOT TESTED YET
+        addEventFilter(MouseEvent.MOUSE_ENTERED_TARGET, event -> {
+            mouseX = event.getX();
+            mouseY = event.getY();
+        });
+        addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
+            setCameraXY(
+                    cameraX.get() + event.getX() - mouseX,
+                    cameraY.get() + event.getY() - mouseY);
+            mouseX = event.getX();
+            mouseY = event.getY();
+        });
+        addEventFilter(ScrollEvent.ANY, event -> {
+            double coefficient = 1 - 1/zoomSpeed;
+            cameraX.set(cameraX.get() + event.getX() * coefficient);
+            cameraY.set(cameraY.get() + event.getY() * coefficient);
+            zoom.set(zoom.get() * zoomSpeed);
+        });
     }
 
 
@@ -46,15 +90,6 @@ public class VectorCanvas extends Pane {
     public void redraw() {
         clear();
         draw();
-    }
-
-
-    public double getRelativeX(double x) {
-        return (getWidth()/2 * (x+1) - cameraX.get()) / zoom.get();
-    }
-
-    public double getRelativeY(double y) {
-        return (getHeight()/2 * (y+1) - cameraY.get()) / zoom.get();
     }
 
 
@@ -120,7 +155,86 @@ public class VectorCanvas extends Pane {
 
 
     /**
-     * Getter, setter and switcher of the redrawLock;
+     * Getter, setter and switcher for camera coords availability.
+     */
+    public boolean isEnableCameraCoords() {
+        return enableCameraCoords.get();
+    }
+    public void setEnableCameraCoords(boolean enableCameraCoords) {
+        this.enableCameraCoords.set(enableCameraCoords);
+    }
+    public void switchEnableCameraCoords() {
+        enableCameraCoords.set(!enableCameraCoords.get());
+    }
+    public BooleanProperty enableCameraCoordsProperty() {
+        return enableCameraCoords;
+    }
+
+
+    /**
+     * Getter, setter and switcher for zoom availability.
+     */
+    public boolean isEnableZoom() {
+        return enableZoom.get();
+    }
+    public void setEnableZoom(boolean enableZoom) {
+        this.enableZoom.set(enableZoom);
+    }
+    public void switchEnableZoom() {
+        enableZoom.set(!enableZoom.get());
+    }
+    public BooleanProperty enableZoomProperty() {
+        return enableZoom;
+    }
+
+
+    /**
+     * Getter, setter and switcher for camera locker.
+     */
+    public boolean isLockCamera() {
+        return lockCamera.get();
+    }
+    public BooleanProperty lockCameraProperty() {
+        return lockCamera;
+    }
+    public void setLockCamera(boolean lockCamera) {
+        this.lockCamera.set(lockCamera);
+    }
+    public void switchLockCamera() {
+        lockCamera.set(!lockCamera.get());
+    }
+
+
+    /**
+     * Getter, setter and switcher for zoom locker.
+     */
+    public boolean isLockZoom() {
+        return lockZoom.get();
+    }
+    public BooleanProperty lockZoomProperty() {
+        return lockZoom;
+    }
+    public void setLockZoom(boolean lockZoom) {
+        this.lockZoom.set(lockZoom);
+    }
+    public void switchLockZoom() {
+        lockZoom.set(!lockZoom.get());
+    }
+
+
+    /**
+     * Getter and setter for zoom speed.
+     */
+    public double getZoomSpeed() {
+        return zoomSpeed;
+    }
+    public void setZoomSpeed(double zoomSpeed) {
+        this.zoomSpeed = zoomSpeed;
+    }
+
+
+    /**
+     * Getter, setter and switcher for redrawLock;
      */
     public boolean isRedrawLock() {
         return redrawLock;
@@ -134,7 +248,7 @@ public class VectorCanvas extends Pane {
 
 
     /**
-     * Resizes GraphCanvas.
+     * Resizes VectorCanvas.
      *
      * It will not redraw canvas if width and height are not changed.
      * It will always redraw canvas maximum one time even if both width and height are changed.
@@ -149,5 +263,159 @@ public class VectorCanvas extends Pane {
         setWidth(width);
         redrawLock = false;
         setHeight(height);
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  Graphics                                                                                                          //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * Coords relative to camera position and zoom (if they are enabled) from original coords.
+     */
+    public double getCanvasX(double x) {
+        if (enableCameraCoords.get())
+            x -= cameraX.get();
+        if (enableZoom.get())
+            x /= zoom.get();
+        return x;
+    }
+    public double getCanvasY(double y) {
+        if (enableCameraCoords.get())
+            y -= cameraY.get();
+        if (enableZoom.get())
+            y /= zoom.get();
+        return y;
+    }
+
+    /**
+     * Original coords from relative to camera position and zoom (if they are enabled).
+     */
+    public double getOriginalX(double x) {
+        if (enableZoom.get())
+            x *= zoom.get();
+        if (enableCameraCoords.get())
+            x += cameraX.get();
+        return x;
+    }
+    public double getOriginalY(double y) {
+        if (enableZoom.get())
+            y *= zoom.get();
+        if (enableCameraCoords.get())
+            y += cameraY.get();
+        return y;
+    }
+
+
+    public void transform(Line line) {
+        line.setStartX(getCanvasX(line.getStartX()));
+        line.setStartY(getCanvasY(line.getStartY()));
+        line.setEndX(getCanvasX(line.getEndX()));
+        line.setEndY(getCanvasY(line.getEndY()));
+        if (enableZoom.get())
+            line.setStrokeWidth(line.getStrokeWidth() / zoom.get());
+    }
+    public void retransform(Line line) {
+        line.setStartX(getOriginalX(line.getStartX()));
+        line.setStartY(getOriginalY(line.getStartY()));
+        line.setEndX(getOriginalX(line.getEndX()));
+        line.setEndY(getOriginalY(line.getEndY()));
+        if (enableZoom.get())
+            line.setStrokeWidth(line.getStrokeWidth() * zoom.get());
+    }
+
+    public void transform(Circle circle) {
+        circle.setCenterX(getCanvasX(circle.getCenterX()));
+        circle.setCenterY(getCanvasY(circle.getCenterY()));
+        if (enableZoom.get()) {
+            circle.setRadius(circle.getRadius() / zoom.get());
+            circle.setStrokeWidth(circle.getStrokeWidth() / zoom.get());
+        }
+    }
+    public void retransform(Circle circle) {
+        circle.setCenterX(getOriginalX(circle.getCenterX()));
+        circle.setCenterY(getOriginalY(circle.getCenterY()));
+        if (enableZoom.get()) {
+            circle.setRadius(circle.getRadius() * zoom.get());
+            circle.setStrokeWidth(circle.getStrokeWidth() * zoom.get());
+        }
+    }
+
+    public void transform(Rectangle rectangle) {
+        rectangle.setX(getCanvasX(rectangle.getX()));
+        rectangle.setY(getCanvasY(rectangle.getY()));
+        if (enableZoom.get()) {
+            rectangle.setWidth(rectangle.getWidth() / zoom.get());
+            rectangle.setHeight(rectangle.getHeight() / zoom.get());
+            rectangle.setStrokeWidth(rectangle.getStrokeWidth() / zoom.get());
+        }
+    }
+    public void retransform(Rectangle rectangle) {
+        rectangle.setX(getOriginalX(rectangle.getX()));
+        rectangle.setY(getOriginalY(rectangle.getY()));
+        if (enableZoom.get()) {
+            rectangle.setWidth(rectangle.getWidth() * zoom.get());
+            rectangle.setHeight(rectangle.getHeight() * zoom.get());
+            rectangle.setStrokeWidth(rectangle.getStrokeWidth() * zoom.get());
+        }
+    }
+
+    public void transform(Text text) {
+        text.setX(getCanvasX(text.getX()));
+        text.setY(getCanvasY(text.getY()));
+        if (enableZoom.get()) {
+            text.setFont(Font.font(text.getFont().getFamily(), text.getFont().getSize() / zoom.get()));
+            text.setStrokeWidth(text.getStrokeWidth() / zoom.get());
+        }
+    }
+    public void retransform(Text text) {
+        text.setX(getOriginalX(text.getX()));
+        text.setY(getOriginalY(text.getY()));
+        if (enableZoom.get()) {
+            text.setFont(Font.font(text.getFont().getFamily(), text.getFont().getSize() * zoom.get()));
+            text.setStrokeWidth(text.getStrokeWidth() * zoom.get());
+        }
+    }
+
+
+    public void draw(Line line) {
+        transform(line);
+        getChildren().add(line);
+    }
+    public void drawAll(Line... lines) {
+        for (Line line : lines)
+            transform(line);
+        getChildren().addAll(lines);
+    }
+
+    public void draw(Circle circle) {
+        transform(circle);
+        getChildren().add(circle);
+    }
+    public void drawAll(Circle... circles) {
+        for (Circle circle : circles)
+            transform(circle);
+        getChildren().addAll(circles);
+    }
+
+    public void draw(Rectangle rectangle) {
+        transform(rectangle);
+        getChildren().add(rectangle);
+    }
+    public void drawAll(Rectangle... rectangles) {
+        for (Rectangle rectangle : rectangles)
+            transform(rectangle);
+        getChildren().addAll(rectangles);
+    }
+
+    public void draw(Text text) {
+        transform(text);
+        getChildren().add(text);
+    }
+    public void drawAll(Text... texts) {
+        for (Text text : texts)
+            transform(text);
+        getChildren().addAll(texts);
     }
 }
