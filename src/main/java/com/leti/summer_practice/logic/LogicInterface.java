@@ -5,43 +5,43 @@ import java.util.ArrayList;
 
 public interface LogicInterface {
 
-    class Node_info {
+    class VertexInfo {
         public String name;
         public Integer color;
     }
 
-    class Edge_info {
+    class EdgeInfo {
         public String start;
         public String finish;
         public int weight;
         public Integer color;
     }
 
-    void remove_vertex(String name);
+    void removeVertex(String name);
 
-    void add_vertex(String name);
+    void addVertex(String name);
 
-    void add_edge(String start, String finish, int weight);
+    void addEdge(String start, String finish, int weight);
 
-    void remove_edge(String start, String finish);
+    void removeEdge(String start, String finish);
 
-    Integer get_vertex_color(String name);
+    Integer getVertexColor(String name);
 
-    Integer get_edge_color(String start, String finish);
+    Integer getEdgeColor(String start, String finish);
 
-    ArrayList<Node_info> getVertices();
+    ArrayList<VertexInfo> getVertices();
 
-    ArrayList<Edge_info> getEdges();
+    ArrayList<EdgeInfo> getEdges();
 
-    boolean load_file(File file);
+    boolean loadFile(File file);
 
-    void start_algorithm();
+    void startAlgorithm();
 
-    Logic.Edge_info[] get_new_edges();
+    EdgeInfo[] getNewEdges();
 
-    void next_big_step();
+    void nextBigStep();
 
     boolean isAlgorithmFinished();
 
-    ArrayList<Edge_info> get_answer();
+    ArrayList<EdgeInfo> getAnswer();
 }
