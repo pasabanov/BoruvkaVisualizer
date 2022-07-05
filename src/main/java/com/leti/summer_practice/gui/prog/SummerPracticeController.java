@@ -232,6 +232,7 @@ public class SummerPracticeController implements Initializable {
         }
 
         printAlgorithmResult();
+        canvas.redraw();
     }
 
 
