@@ -5,11 +5,16 @@ import java.util.ArrayList;
 
 public class Logic implements LogicInterface {
 
-    Graph graph;
-    Algorithm algorithm;
+    private Graph graph;
+    private Algorithm algorithm;
+
+    private int current_edge;
+    Graph.Edge[] current_step_edges;
 
     public Logic() {
         graph = new Graph();
+        current_edge = 0;
+        current_step_edges = null;
     }
 
     @Override
@@ -36,27 +41,31 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public Integer getVertexColor(String name) {
-
+    public VertexInfo getVertexInfo(String name) {
+        Integer color;
         if (algorithm == null) {
-            return null;
+            color = null;
+        } else {
+            Graph.Node vertex = graph.get_vertex(name);
+            color = algorithm.get_vertex_color(vertex);
         }
 
-        Graph.Node vertex = graph.get_vertex(name);
-        return algorithm.get_vertex_color(vertex);
+        return new VertexInfo(name, color);
     }
 
     @Override
-    public Integer getEdgeColor(String start, String finish) {
+    public EdgeInfo getEdgeInfo(String start, String finish) {
 
+        Integer color;
         if (algorithm == null) {
-            return null;
+            color = null;
+        } else {
+            Graph.Node start_vertex = graph.get_vertex(start);
+            Graph.Node finish_vertex = graph.get_vertex(finish);
+            color = algorithm.get_edge_color(start_vertex, finish_vertex);
         }
-
-        Graph.Node start_vertex = graph.get_vertex(start);
-        Graph.Node finish_vertex = graph.get_vertex(finish);
-
-        return algorithm.get_edge_color(start_vertex, finish_vertex);
+        int weight = graph.get_edge(start, finish).get_weight();
+        return new EdgeInfo(start, finish, weight, color);
     }
 
     @Override
@@ -109,31 +118,25 @@ public class Logic implements LogicInterface {
             throw new RuntimeException("Graph is not connected");
         }
         algorithm = new Algorithm(graph);
+        current_step_edges = algorithm.get_new_edges();
+        current_edge = 0;
     }
 
     @Override
-    public EdgeInfo[] getNewEdges() {
+    public EdgeInfo getNewEdge() {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not started");
         }
-
-        Graph.Edge[] edges = algorithm.get_new_edges();
-
-        if (edges == null) {
+        if (current_step_edges == null || current_edge == current_step_edges.length) {
             return null;
         }
-
-        EdgeInfo[] new_edges = new EdgeInfo[edges.length];
-
-        for (int i = 0; i < edges.length; i++) {
-            new_edges[i] = new EdgeInfo();
-            new_edges[i].start = edges[i].get_start().get_name();
-            new_edges[i].finish = edges[i].get_finish().get_name();
-            new_edges[i].weight = edges[i].get_weight();
-            new_edges[i].color = i;
-        }
-
-        return new_edges;
+        EdgeInfo new_edge = new EdgeInfo();
+        new_edge.start = current_step_edges[current_edge].get_start().get_name();
+        new_edge.finish = current_step_edges[current_edge].get_finish().get_name();
+        new_edge.color = current_edge;
+        new_edge.weight = current_step_edges[current_edge].get_weight();
+        current_edge++;
+        return new_edge;
     }
 
     @Override
@@ -142,6 +145,8 @@ public class Logic implements LogicInterface {
             throw new RuntimeException("Algorithm is not started");
         }
         algorithm.next_step();
+        current_step_edges = algorithm.get_new_edges();
+        current_edge = 0;
     }
 
     @Override
@@ -179,6 +184,10 @@ public class Logic implements LogicInterface {
             res.add(new_edge);
         }
         return res;
+    }
+
+    public boolean isEmpty() {
+        return graph.get_vertex_count() == 0;
     }
 
 }
