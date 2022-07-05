@@ -75,7 +75,7 @@ public class SummerPracticeController implements Initializable {
 
 //    private ArrayList<LogicInterface.EdgeInfo> newEdges = new ArrayList<>();
 
-    private int curNewEdgeIndex = 0;
+//    private int curNewEdgeIndex = 0;
 
     GraphMode graphMode = GraphMode.MOVING;
 
@@ -130,11 +130,8 @@ public class SummerPracticeController implements Initializable {
                 canvas.draw(text);
             }
 
-            int tmpIndex = -1;
             // drawing changed edges
             for (LogicInterface.EdgeInfo edge : newEdges) {
-                if (tmpIndex++ == curNewEdgeIndex)
-                    break;
                 Pair<Double,Double> startCoords = verticesCoordsMap.get(edge.start),
                         finishCoords = verticesCoordsMap.get(edge.finish);
                 double startX = (startCoords.getKey()) * CANVAS_WIDTH / 2;
@@ -212,9 +209,11 @@ public class SummerPracticeController implements Initializable {
         if (!tryToStartAlgorithm())
             return;
 
-        while (!logic.isAlgorithmFinished())
-            while (logic.getNewEdges() != null)
-                logic.nextBigStep();
+        while (!logic.isAlgorithmFinished()) {
+            while (logic.getNewEdge() != null)
+                ;
+            logic.nextBigStep();
+        }
 
         printAlgorithmResult();
     }
@@ -230,33 +229,39 @@ public class SummerPracticeController implements Initializable {
             boolean algorithmStarted = tryToStartAlgorithm();
             if (!algorithmStarted)
                 return;
-            curNewEdgeIndex = 0;
             canvas.redraw();
             return;
         }
 
         if (logic.isAlgorithmFinished()) {
             newEdges.clear();
-            curNewEdgeIndex = 0;
             printAlgorithmResult();
             canvas.redraw();
             return;
         }
 
-        if (newEdges.isEmpty() || curNewEdgeIndex == newEdges.size() - 1) {
+        LogicInterface.EdgeInfo newEdge;
+
+        do {
+            newEdge = logic.getNewEdge();
+        } while (newEdge != null && newEdges.contains(newEdge));
+
+        if (newEdge == null) {
 
             logic.nextBigStep();
 
             newEdges.clear();
 
-            if (!logic.isAlgorithmFinished())
-                newEdges.addAll(Arrays.asList(logic.getNewEdges()));
-            else
+            if (logic.isAlgorithmFinished())
                 printAlgorithmResult();
 
-            curNewEdgeIndex = 0;
+//            if (!logic.isAlgorithmFinished())
+//                newEdges.addAll(Arrays.asList(logic.getNewEdges()));
+//            else
+//                printAlgorithmResult();
+
         } else {
-            ++curNewEdgeIndex;
+            newEdges.add(newEdge);
         }
 
         canvas.redraw();
@@ -296,7 +301,6 @@ public class SummerPracticeController implements Initializable {
         canvas.clear();
         logTextArea.clear();
         newEdges.clear();
-        curNewEdgeIndex = 0;
         verticesCoordsMap.clear();
     }
 }
