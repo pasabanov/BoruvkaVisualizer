@@ -97,6 +97,7 @@ public class Logic implements LogicInterface {
 
     @Override
     public void loadFile(File file) {
+        killAlgorithm();
         graph = Graph.read_file(file);
     }
 
@@ -146,7 +147,7 @@ public class Logic implements LogicInterface {
 
     @Override
     public boolean isAlgorithmFinished() {
-        return algorithm.isFinished();
+        return algorithm != null && algorithm.isFinished();
     }
 
     @Override

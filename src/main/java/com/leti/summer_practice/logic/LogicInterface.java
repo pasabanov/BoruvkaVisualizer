@@ -15,6 +15,11 @@ public interface LogicInterface {
         public String finish;
         public int weight;
         public Integer color;
+
+        @Override
+        public String toString() {
+            return start + " --> " + finish + " = " + weight + ", color=" + color;
+        }
     }
 
     void removeVertex(String name);

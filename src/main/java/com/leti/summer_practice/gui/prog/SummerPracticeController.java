@@ -23,6 +23,12 @@ import java.util.*;
 public class SummerPracticeController implements Initializable {
 
 
+    private enum GraphMode {
+        DRAWING,
+        MOVING
+    }
+
+
     private static final double CANVAS_WIDTH = 100;
     private static final double CANVAS_HEIGHT = 100;
 
@@ -30,6 +36,9 @@ public class SummerPracticeController implements Initializable {
     private static final double CANVAS_DEFAULT_CAMERA_Y = -50;
 
     private static final double CANVAS_DEFAULT_ZOOM = 1;
+
+    private static final Color DEFAULT_VERTEX_COLOR = Color.DARKGRAY;
+    private static final Color DEFAULT_EDGE_COLOR = Color.LIGHTGRAY;
 
 
     @FXML
@@ -54,22 +63,54 @@ public class SummerPracticeController implements Initializable {
 
     LogicInterface logic = new Logic();
 
-    private Map<String,Pair<Double,Double>> verticesCoordsMap = new HashMap<>();
+    private final Map<String,Pair<Double,Double>> verticesCoordsMap = new HashMap<>();
+
+//    private final Set<Pair<String,String>> newEdges = new TreeSet<>(
+//            Comparator.comparing((Pair<String, String> o) -> o.getKey()).thenComparing(Pair::getValue));
+
+    private final Set<LogicInterface.EdgeInfo> newEdges = new TreeSet<>(
+            Comparator.comparing((LogicInterface.EdgeInfo o) -> o.start)
+                    .thenComparing(o -> o.finish)
+                    .thenComparingInt(o -> o.weight));
+
+//    private ArrayList<LogicInterface.EdgeInfo> newEdges = new ArrayList<>();
+
+    private int curNewEdgeIndex = 0;
+
+    GraphMode graphMode = GraphMode.MOVING;
 
     boolean graphExists = false;
 
-    boolean outputMatrix = true;
+    boolean paintNewEdgesRed = true;
+
+
+    private static Color getColorByInt(int n) {
+        return new Object() {
+            private static final ArrayList<Color> colors
+                    = new ArrayList<>(List.of(new Color[]{Color.GREEN, Color.ORANGE, Color.YELLOW,
+                    Color.BLUE, Color.CYAN, Color.BROWN,
+                    Color.AQUAMARINE, Color.BEIGE, Color.PURPLE, Color.PINK}));
+            private Color getColorByInt(int n) {
+                while (n >= colors.size())
+                    colors.add(Color.color(Math.random(), Math.random(), Math.random()));
+                return colors.get(n);
+            }
+        }.getColorByInt(n);
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         canvas.setCameraXY(CANVAS_DEFAULT_CAMERA_X, CANVAS_DEFAULT_CAMERA_Y);
-        canvas.setZoom(CANVAS_DEFAULT_ZOOM / (CANVAS_WIDTH + CANVAS_HEIGHT) * (1200));
+        canvas.setZoom(CANVAS_DEFAULT_ZOOM / Math.min(CANVAS_WIDTH, CANVAS_HEIGHT) * (500));
 
         canvas.setDrawer(graphCanvas -> {
             Map<String, Pair<Double,Double>> verticesCoordsMap = this.verticesCoordsMap;
             if (verticesCoordsMap.isEmpty())
                 return;
+
+            // drawing all edges
             for (LogicInterface.EdgeInfo edge : logic.getEdges()) {
                 Pair<Double,Double> startCoords = verticesCoordsMap.get(edge.start),
                         finishCoords = verticesCoordsMap.get(edge.finish);
@@ -77,9 +118,10 @@ public class SummerPracticeController implements Initializable {
                 double startY = (startCoords.getValue()) * CANVAS_HEIGHT / 2;
                 double finishX = (finishCoords.getKey()) * CANVAS_WIDTH / 2;
                 double finishY = (finishCoords.getValue()) * CANVAS_HEIGHT / 2;
+                Color color = (edge.color == null) ? DEFAULT_EDGE_COLOR : getColorByInt(edge.color);
                 Line line = new Line(startX, startY, finishX, finishY);
                 line.setStrokeWidth(2 / canvas.getZoom());
-                line.setStroke(Color.GREEN);
+                line.setStroke(color);
                 canvas.draw(line);
                 double textX = (startX + finishX) / 2;
                 double textY = (startY + finishY) / 2;
@@ -87,12 +129,39 @@ public class SummerPracticeController implements Initializable {
                 text.setFont(Font.font(16 / canvas.getZoom()));
                 canvas.draw(text);
             }
-            for (String name : verticesCoordsMap.keySet()) {
+
+            int tmpIndex = -1;
+            // drawing changed edges
+            for (LogicInterface.EdgeInfo edge : newEdges) {
+                if (tmpIndex++ == curNewEdgeIndex)
+                    break;
+                Pair<Double,Double> startCoords = verticesCoordsMap.get(edge.start),
+                        finishCoords = verticesCoordsMap.get(edge.finish);
+                double startX = (startCoords.getKey()) * CANVAS_WIDTH / 2;
+                double startY = (startCoords.getValue()) * CANVAS_HEIGHT / 2;
+                double finishX = (finishCoords.getKey()) * CANVAS_WIDTH / 2;
+                double finishY = (finishCoords.getValue()) * CANVAS_HEIGHT / 2;
+                Color color = paintNewEdgesRed ? Color.RED : (edge.color == null) ? DEFAULT_EDGE_COLOR : getColorByInt(edge.color);
+                Line line = new Line(startX, startY, finishX, finishY);
+                line.setStrokeWidth(2 / canvas.getZoom());
+                line.setStroke(color);
+                canvas.draw(line);
+                double textX = (startX + finishX) / 2;
+                double textY = (startY + finishY) / 2;
+                Text text = new Text(textX, textY, "" + edge.weight);
+                text.setFont(Font.font(16 / canvas.getZoom()));
+                canvas.draw(text);
+            }
+
+            // drawing vertices
+            for (LogicInterface.VertexInfo vertex : logic.getVertices()) {
+                String name = vertex.name;
                 Pair<Double,Double> coords = verticesCoordsMap.get(name);
                 double x = (coords.getKey()) * CANVAS_WIDTH / 2;
                 double y = (coords.getValue()) * CANVAS_HEIGHT / 2;
+                Color color = (vertex.color == null) ? DEFAULT_VERTEX_COLOR : getColorByInt(vertex.color);
                 Circle circle = new Circle(x, y, 20 / canvas.getZoom());
-                circle.setFill(Color.ORANGE);
+                circle.setFill(color);
                 canvas.draw(circle);
                 Text text = new Text(x, y, name);
                 text.setFont(Font.font(16 / canvas.getZoom()));
@@ -101,33 +170,32 @@ public class SummerPracticeController implements Initializable {
         });
     }
 
+
+    @FXML
     public void onLoadFromFileClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(SummerPracticeApplication.getApplication().getPrimaryStage());
         if (file == null)
             return;
-        boolean success = logic.loadFile(file);
-        if (!success) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(R.string("failed_to_load_file_alert_title"));
-            alert.setHeaderText(R.string("failed_to_load_file_alert_header_text"));
-            alert.setContentText(R.string("failed_to_load_file_alert_content_text"));
-            alert.showAndWait();
-        }
         try {
-            logic.startAlgorithm();
+            logic.loadFile(file);
         } catch (RuntimeException re) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(R.string("failed_to_load_file_alert_title"));
-            alert.setContentText(R.string(re.getMessage()));
+            alert.setHeaderText(R.string("default_error_alert_header_text   "));
+            alert.setContentText(re.getMessage());
             alert.showAndWait();
+            return;
         }
         generateVerticesCoords(logic);
+        logTextArea.clear();
+        newEdges.clear();
         canvas.redraw();
         graphExists = true;
     }
 
     public void generateVerticesCoords(LogicInterface logic) {
+        verticesCoordsMap.clear();
         ArrayList<LogicInterface.VertexInfo> vertexInfos = logic.getVertices();
         double step = 2 * Math.PI / vertexInfos.size();
         double angle = Math.PI;
@@ -135,58 +203,100 @@ public class SummerPracticeController implements Initializable {
             verticesCoordsMap.put(vertexInfos.get(i).name, new Pair<>(0.9*Math.cos(angle), 0.9*Math.sin(angle)));
     }
 
+
+    @FXML
     public void onStartClick(ActionEvent actionEvent) {
         if (!graphExists)
             return;
-        while (!logic.isAlgorithmFinished()) {
+
+        if (!tryToStartAlgorithm())
+            return;
+
+        while (!logic.isAlgorithmFinished())
             while (logic.getNewEdges() != null)
                 logic.nextBigStep();
+
+        printAlgorithmResult();
+    }
+
+
+    @FXML
+    public void onNextStepClicked(ActionEvent actionEvent) {
+
+        if (!graphExists)
+            return;
+
+        if (!logic.isAlgorithmStarted()) {
+            boolean algorithmStarted = tryToStartAlgorithm();
+            if (!algorithmStarted)
+                return;
+            curNewEdgeIndex = 0;
+            canvas.redraw();
+            return;
         }
+
+        if (logic.isAlgorithmFinished()) {
+            newEdges.clear();
+            curNewEdgeIndex = 0;
+            printAlgorithmResult();
+            canvas.redraw();
+            return;
+        }
+
+        if (newEdges.isEmpty() || curNewEdgeIndex == newEdges.size() - 1) {
+
+            logic.nextBigStep();
+
+            newEdges.clear();
+
+            if (!logic.isAlgorithmFinished())
+                newEdges.addAll(Arrays.asList(logic.getNewEdges()));
+            else
+                printAlgorithmResult();
+
+            curNewEdgeIndex = 0;
+        } else {
+            ++curNewEdgeIndex;
+        }
+
+        canvas.redraw();
+    }
+
+    private boolean tryToStartAlgorithm() {
+        try {
+            logic.startAlgorithm();
+            return true;
+        } catch (RuntimeException re) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(R.string("failed_to_start_algorithm_alert_title"));
+            alert.setHeaderText(R.string("default_error_alert_header_text"));
+            alert.setContentText(re.getMessage());
+            alert.showAndWait();
+            return false;
+        }
+    }
+
+    private void printAlgorithmResult() {
+        if (!graphExists || !logic.isAlgorithmFinished())
+            return;
+
         StringBuilder sb = new StringBuilder();
 
-        if (outputMatrix) {
-            int n = logic.getVertices().size();
-            ArrayList<ArrayList<Integer>> matrix = new ArrayList<>(n);
-            for (int i = 0; i < n; ++i) {
-                matrix.add(new ArrayList<>(n));
-                for (int j = 0; j < n; ++j)
-                    matrix.get(i).add(0);
-            }
-            for (LogicInterface.EdgeInfo edge : logic.getAnswer()) {
-                int from = fromAZto09(edge.start), to = fromAZto09(edge.finish);
-                matrix.get(from).set(to, edge.weight);
-                matrix.get(to).set(from, edge.weight);
-            }
-            for (ArrayList<Integer> row : matrix) {
-                for (Integer i : row) {
-                    sb.append(i).append(' ');
-                }
-                sb.append('\n');
-            }
-        } else {
-            for (LogicInterface.EdgeInfo edge : logic.getAnswer())
-                sb.append(edge.start).append(" -> ").append(edge.finish).append(" = ").append(edge.weight).append('\n');
-        }
+        for (LogicInterface.EdgeInfo edge : logic.getAnswer())
+            sb.append(edge.start).append(" --- ").append(edge.finish).append(" = ").append(edge.weight).append('\n');
 
         logTextArea.setText(sb.toString());
     }
 
-    public static int fromAZto09(String string) {
-        string = string.toUpperCase(Locale.ROOT);
-        int result = 0;
-        for (int i = 0; i < string.length(); ++i) {
-            result *= 26;
-            result += string.charAt(i) - 'A';
-        }
-        return result;
-    }
 
-    public static String from09toAZ(int n) {
-        StringBuilder sb = new StringBuilder();
-        while (n > 0) {
-            sb.append((char)('A' + n % 26));
-            n /= 26;
-        }
-        return sb.reverse().toString();
+    @FXML
+    public void onResetClicked(ActionEvent actionEvent) {
+        graphExists = false;
+        logic = new Logic();
+        canvas.clear();
+        logTextArea.clear();
+        newEdges.clear();
+        curNewEdgeIndex = 0;
+        verticesCoordsMap.clear();
     }
 }
