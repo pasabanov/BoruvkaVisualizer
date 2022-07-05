@@ -21,6 +21,13 @@ public class Graph {
         return adress.size();
     }
 
+    public void clear() {
+        matrix.clear();
+        adress.clear();
+        available_numbers.clear();
+        max_index = 0;
+    }
+
     public boolean is_connected() {
         Map<Graph.Node, Boolean> closed = new HashMap<>();
         Set<String> entry = adress.keySet();
@@ -212,7 +219,6 @@ public class Graph {
         }
         return true;
     }
-
 
 
     public Node create_vertex(String name) {
