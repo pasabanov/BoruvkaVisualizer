@@ -75,8 +75,6 @@ public class SummerPracticeController implements Initializable {
 
 //    private ArrayList<LogicInterface.EdgeInfo> newEdges = new ArrayList<>();
 
-//    private int curNewEdgeIndex = 0;
-
     GraphMode graphMode = GraphMode.MOVING;
 
     boolean graphExists = false;
@@ -254,11 +252,6 @@ public class SummerPracticeController implements Initializable {
 
             if (logic.isAlgorithmFinished())
                 printAlgorithmResult();
-
-//            if (!logic.isAlgorithmFinished())
-//                newEdges.addAll(Arrays.asList(logic.getNewEdges()));
-//            else
-//                printAlgorithmResult();
 
         } else {
             newEdges.add(newEdge);
