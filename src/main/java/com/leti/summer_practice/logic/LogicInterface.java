@@ -67,4 +67,8 @@ public interface LogicInterface {
     boolean isAlgorithmStarted();
 
     void killAlgorithm();
+
+    public boolean isGraphEmpty();
+
+    public void deleteGraph();
 }

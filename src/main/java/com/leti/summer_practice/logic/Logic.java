@@ -187,8 +187,12 @@ public class Logic implements LogicInterface {
         return res;
     }
 
-    public boolean isEmpty() {
+    public boolean isGraphEmpty() {
         return graph.get_vertex_count() == 0;
+    }
+
+    public void deleteGraph() {
+        graph.clear();
     }
 
 }
