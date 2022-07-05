@@ -10,6 +10,12 @@ public class SummerPracticeApplication extends Application {
     private static SummerPracticeApplication application;
     private Stage primaryStage;
 
+
+    public static void launchSummerPracticeApplication(String... args) {
+        launch(args);
+    }
+
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         application = this;
@@ -19,19 +25,16 @@ public class SummerPracticeApplication extends Application {
         primaryStage.show();
     }
 
+
     public static SummerPracticeApplication getApplication() {
         return application;
     }
 
+
     public Stage getPrimaryStage() {
         return primaryStage;
     }
-
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

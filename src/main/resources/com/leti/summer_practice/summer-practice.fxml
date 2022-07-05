@@ -23,7 +23,7 @@
                  prefWidth="600.0"
                  BorderPane.alignment="CENTER">
 
-         <VectorCanvas fx:id="canvas"/>
+         <VectorCanvas fx:id="canvas" minWidth="1" minHeight="1" />
 
          <TextArea fx:id="logTextArea"
                    editable="false"
@@ -93,10 +93,12 @@
                        mnemonicParsing="false"/>
 
                <Button fx:id="nextStepButton"
+                       onAction="#onNextStepClicked"
                        text="%next_step"
                        mnemonicParsing="false"/>
 
                <Button fx:id="resetButton"
+                       onAction="#onResetClicked"
                        text="%reset"
                        mnemonicParsing="false"/>
             </VBox>
