@@ -33,7 +33,7 @@ public interface LogicInterface {
 
     ArrayList<EdgeInfo> getEdges();
 
-    boolean loadFile(File file);
+    Graph loadFile(File file);
 
     void startAlgorithm();
 
