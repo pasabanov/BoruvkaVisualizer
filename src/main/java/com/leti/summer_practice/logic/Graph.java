@@ -40,48 +40,166 @@ public class Graph {
         ArrayList<Graph.Node> neighbours = get_neighbours(current);
         for (int i = 0; i < neighbours.size(); i++) {
             if (!closed.containsKey(neighbours.get(i))) {
-                res = res+dfs(closed, neighbours.get(i));
+                res = res + dfs(closed, neighbours.get(i));
             }
         }
         return res;
     }
 
+    private static class Graph_builder {
+        Graph result;
+        String[] vertex_names;
 
-    private static ArrayList<Integer> get_row_values(String line) {
-        ArrayList<Integer> res = new ArrayList<>();
-        String[] split = line.split(" +");
-        for (int i = 0; i < split.length; i++) {
-            Integer number;
-            if (split[i].equals("-")) {
-                number = null;
+        private int correct_line_length;
+        private boolean column_mode;
+        private int current_line_count;
+
+        private boolean first_iteration;
+
+        private boolean triangle_mode;
+
+        Graph_builder() {
+            result = new Graph();
+            column_mode = true;
+            triangle_mode = false;
+            first_iteration = true;
+            current_line_count = 0;
+        }
+
+        void init_names(String[] names) {
+            for (int i = 0; i < names.length; i++) {
+                if (names[i].length() > 3 || !names[i].chars().allMatch(Character::isLetter)) {
+                    throw new RuntimeException("Error while reading file:invalid vertex name");
+                }
+                result.create_vertex(names[i]);
+            }
+            vertex_names = names;
+        }
+
+        private void add_directed_edge(String start, String finish, Integer weight) {
+            int start_index = result.adress.get(start);
+            int finish_index = result.adress.get(finish);
+            result.matrix.get(start_index).set(finish_index, weight);
+        }
+
+        private void check_mode(String[] row) {
+            if (current_line_count > result.get_vertex_count()) {
+                throw new RuntimeException("Error while reading file:The number of adjacency matrix rows does not match yhe number of columns");
+            }
+
+            if (row[0].chars().allMatch(Character::isLetter)) {
+                if (!column_mode) {
+                    throw new RuntimeException("Error while reading file:Incorrect matrix");
+                }
+
             } else {
-                number = Integer.parseInt(split[i]);
+
+                if (column_mode) {
+                    if (first_iteration) {
+                        column_mode = false;
+                    } else {
+                        throw new RuntimeException("Error while reading file:Incorrect matrix");
+                    }
+                }
             }
-            res.add(number);
+            if (first_iteration) {
+                if ((row.length == 1 && !column_mode) || (row.length == 2 && column_mode)) {
+                    correct_line_length = 1;
+                    triangle_mode = true;
+                } else {
+                    correct_line_length = result.get_vertex_count();
+                }
+                if (column_mode) {
+                    correct_line_length++;
+                }
+            }
+            if (triangle_mode && !first_iteration) {
+                correct_line_length++;
+            }
+
+            if (row.length != correct_line_length) {
+                throw new RuntimeException("Error while reading file:Incorrect row length");
+            }
+
+            if (column_mode) {
+                if (!row[0].equals(vertex_names[current_line_count])) {
+                    throw new RuntimeException("Error while reading file: Incorrect  name column");
+                }
+            }
+            first_iteration = false;
         }
-        return res;
+
+        void read_row(String[] row) {
+            check_mode(row);
+            int start_index = column_mode ? 1 : 0;
+            for (int i = start_index; i < row.length; i++) {
+                if (!row[i].equals("-")) {
+                    try {
+                        int new_val = Integer.parseInt(row[i]);
+                        String start = vertex_names[current_line_count];
+                        String finish = vertex_names[i - start_index];
+                        if (!triangle_mode) {
+                            add_directed_edge(start, finish, new_val);
+                        } else {
+                            result.create_edge(result.get_vertex(start), result.get_vertex(finish), new_val);
+                        }
+                    } catch (NumberFormatException ex) {
+                        throw new RuntimeException("Error while reading file:Invalid edge weight");
+                    }
+                }
+            }
+            current_line_count++;
+        }
+
+        Graph get_result() {
+            if (column_mode) {
+                current_line_count++;
+            }
+            if (current_line_count != correct_line_length) {
+                throw new RuntimeException("Error while reading file: Adjacency matrix is not square");
+            }
+            if (!result.symmetry_check()) {
+                throw new RuntimeException("Error while reading file:The  Adjacency matrix is not symmetrical");
+            }
+            return result;
+        }
+
+
     }
 
-    private static String next_string(String str) {
-        int current = str.length() - 1;
-        StringBuffer res = new StringBuffer();
-        while (current >= 0 && str.charAt(current) == 'Z') {
-            res.append('A');
-            current--;
-
+    private static String[] check_first(String[] values) {
+        if (values[0].equals("")) {
+            ArrayList<String> temp = new ArrayList<>(Arrays.asList(values));
+            temp.remove(0);
+            return temp.toArray(new String[temp.size()]);
         }
-        char new_symbol;
-        if (current >= 0) {
-            new_symbol = (char) (str.charAt(current) + 1);
-
-        } else {
-            new_symbol = 'A';
-            current = 0;
-        }
-        return new String(str.substring(0, current) + new_symbol + res);
+        return values;
     }
 
-    private static boolean symmetry_check(ArrayList<ArrayList<Integer>> matrix) {
+    static public Graph read_file(File file) {
+        try (FileReader reader = new FileReader(file); BufferedReader buffer = new BufferedReader(reader)) {
+            String line = buffer.readLine();
+            if (line == null) {
+                return new Graph();
+            }
+            Graph_builder builder = new Graph_builder();
+            String[] names = line.split(" +");
+            names = check_first(names);
+            builder.init_names(names);
+            line = buffer.readLine();
+            while (line != null) {
+                String[] new_values = line.split(" +");
+                new_values = check_first(new_values);
+                builder.read_row(new_values);
+                line = buffer.readLine();
+            }
+            return builder.get_result();
+        } catch (IOException e) {
+            throw new RuntimeException("error while opening file");
+        }
+    }
+
+    private boolean symmetry_check() {
         for (int i = 0; i < matrix.size(); i++) {
             for (int j = 0; j < matrix.size(); j++) {
                 if (!Objects.equals(matrix.get(i).get(j), matrix.get(j).get(i))) {
@@ -95,48 +213,7 @@ public class Graph {
         return true;
     }
 
-    boolean read_file(File file) {
-        try (FileReader reader = new FileReader(file); BufferedReader buffer = new BufferedReader(reader)) {
-            ArrayList<ArrayList<Integer>> new_matrix = new ArrayList<>();
-            Integer length = null;
-            String line = buffer.readLine();
-            while (line != null) {
-                ArrayList<Integer> new_row = get_row_values(line);
-                if (length != null && new_row.size() != length) {
-                    System.out.println("Strings with different lengths");
-                    return false;
-                }
-                length = new_row.size();
-                new_matrix.add(new_row);
-                line = buffer.readLine();
-            }
-            if (length != null && new_matrix.size() != length) {
-                System.out.println("The matrix is not square");
-                return false;
-            }
-            if (!symmetry_check(new_matrix)) {
-                System.out.println("The matrix is not symmetrical");
-                return false;
-            }
-            matrix = new_matrix;
-            available_numbers.clear();
-            adress.clear();
-            max_index = Objects.requireNonNullElse(length, 0);
-            String vertex_name = "A";
-            for (int i = 0; i < max_index; i++) {
-                adress.put(vertex_name, i);
-                vertex_name = next_string(vertex_name);
-            }
 
-        } catch (IOException e) {
-            System.out.println("РћС€РёР±РєР° РїСЂРё РѕС‚РєСЂС‹С‚РёРё С„Р°Р№Р»Р°");
-            return false;
-        } catch (NumberFormatException e) {
-            System.out.println("РћС€РёР±РєР° РІ С‡РёСЃР»Р°С… РјР°С‚СЂРёС†С‹");
-            return false;
-        }
-        return true;
-    }
 
     public Node create_vertex(String name) {
         if (adress.containsKey(name)) {
