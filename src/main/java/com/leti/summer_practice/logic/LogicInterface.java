@@ -44,4 +44,8 @@ public interface LogicInterface {
     boolean isAlgorithmFinished();
 
     ArrayList<EdgeInfo> getAnswer();
+
+    boolean isAlgorithmStarted();
+
+    void killAlgorithm();
 }

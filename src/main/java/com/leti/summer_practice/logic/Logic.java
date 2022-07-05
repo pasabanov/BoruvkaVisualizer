@@ -66,7 +66,11 @@ public class Logic implements LogicInterface {
         for (Graph.Node node : nodes) {
             VertexInfo vertexInfo = new VertexInfo();
             vertexInfo.name = node.get_name();
-            vertexInfo.color = algorithm.get_vertex_color(node);
+            if (algorithm == null) {
+                vertexInfo.color = null;
+            } else {
+                vertexInfo.color = algorithm.get_vertex_color(node);
+            }
             vertexInfos.add(vertexInfo);
         }
         return vertexInfos;
@@ -81,7 +85,11 @@ public class Logic implements LogicInterface {
             edge_info.start = edge.get_start().get_name();
             edge_info.finish = edge.get_finish().get_name();
             edge_info.weight = edge.get_weight();
-            edge_info.color = algorithm.get_edge_color(edge.get_start(), edge.get_finish());
+            if (algorithm == null) {
+                edge_info.color = null;
+            } else {
+                edge_info.color = algorithm.get_edge_color(edge.get_start(), edge.get_finish());
+            }
             edge_infos.add(edge_info);
         }
         return edge_infos;
@@ -133,7 +141,6 @@ public class Logic implements LogicInterface {
         if (algorithm == null) {
             throw new RuntimeException("Algorithm is not started");
         }
-
         algorithm.next_step();
     }
 
@@ -141,6 +148,20 @@ public class Logic implements LogicInterface {
     public boolean isAlgorithmFinished() {
         return algorithm.isFinished();
     }
+
+    @Override
+    public void killAlgorithm() {
+        if (algorithm == null) {
+            return;
+        }
+        algorithm = null;
+    }
+
+    @Override
+    public boolean isAlgorithmStarted() {
+        return !(algorithm == null);
+    }
+
 
     @Override
     public ArrayList<EdgeInfo> getAnswer() {
