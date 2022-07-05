@@ -8,6 +8,14 @@ public interface LogicInterface {
     class VertexInfo {
         public String name;
         public Integer color;
+
+        VertexInfo() {
+        }
+
+        VertexInfo(String name, Integer color) {
+            this.name = name;
+            this.color = color;
+        }
     }
 
     class EdgeInfo {
@@ -16,10 +24,16 @@ public interface LogicInterface {
         public int weight;
         public Integer color;
 
-        @Override
-        public String toString() {
-            return start + " --> " + finish + " = " + weight + ", color=" + color;
+        EdgeInfo() {
         }
+
+        EdgeInfo(String start, String finish, int weight, Integer color) {
+            this.start = start;
+            this.finish = finish;
+            this.weight = weight;
+            this.color = color;
+        }
+
     }
 
     void removeVertex(String name);
@@ -30,9 +44,9 @@ public interface LogicInterface {
 
     void removeEdge(String start, String finish);
 
-    Integer getVertexColor(String name);
+    public VertexInfo getVertexInfo(String name);
 
-    Integer getEdgeColor(String start, String finish);
+    public EdgeInfo getEdgeInfo(String start, String finish);
 
     ArrayList<VertexInfo> getVertices();
 
@@ -42,7 +56,7 @@ public interface LogicInterface {
 
     void startAlgorithm();
 
-    EdgeInfo[] getNewEdges();
+    EdgeInfo getNewEdge();
 
     void nextBigStep();
 
