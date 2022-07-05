@@ -80,10 +80,17 @@ public class SummerPracticeController implements Initializable {
 
     private static Color getColorByInt(int n) {
         return new Object() {
+
             private static final ArrayList<Color> colors
-                    = new ArrayList<>(List.of(new Color[]{Color.GREEN, Color.ORANGE, Color.YELLOW,
-                    Color.BLUE, Color.CYAN, Color.BROWN,
-                    Color.AQUAMARINE, Color.BEIGE, Color.PURPLE, Color.PINK}));
+                    = new ArrayList<>(
+                            List.of(
+                                    Color.GREEN, Color.ORANGE, Color.YELLOW,
+                                    Color.BLUE, Color.CYAN, Color.BROWN,
+                                    Color.AQUAMARINE, Color.SALMON, Color.PURPLE,
+                                    Color.PINK, Color.YELLOWGREEN, Color.OLIVE
+                            )
+            );
+
             private Color getColorByInt(int n) {
                 while (n >= colors.size())
                     colors.add(Color.color(Math.random(), Math.random(), Math.random()));
