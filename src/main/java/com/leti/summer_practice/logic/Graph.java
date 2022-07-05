@@ -11,9 +11,9 @@ public class Graph {
     LinkedList<Integer> available_numbers;
 
     public Graph() {
-        matrix = new ArrayList<ArrayList<Integer>>();
-        adress = new HashMap<String, Integer>();
-        available_numbers = new LinkedList<Integer>();
+        matrix = new ArrayList<>();
+        adress = new HashMap<>();
+        available_numbers = new LinkedList<>();
         max_index = 0;
     }
 

@@ -157,15 +157,12 @@ public class Logic implements LogicInterface {
 
     @Override
     public void killAlgorithm() {
-        if (algorithm == null) {
-            return;
-        }
         algorithm = null;
     }
 
     @Override
     public boolean isAlgorithmStarted() {
-        return !(algorithm == null);
+        return algorithm != null;
     }
 
 
@@ -180,7 +177,11 @@ public class Logic implements LogicInterface {
             EdgeInfo new_edge = new EdgeInfo();
             new_edge.start = edge.get_start().get_name();
             new_edge.finish = edge.get_finish().get_name();
-            new_edge.color = null;
+            if (algorithm == null) {
+                new_edge.color = null;
+            } else {
+                new_edge.color = algorithm.get_edge_color(edge.get_start(), edge.get_finish());
+            }
             new_edge.weight = edge.get_weight();
             res.add(new_edge);
         }
@@ -191,9 +192,8 @@ public class Logic implements LogicInterface {
         return graph.get_vertex_count() == 0;
     }
 
-    public void deleteGraph() {
+    public void clearGraph() {
+        killAlgorithm();
         graph.clear();
     }
-
 }
-

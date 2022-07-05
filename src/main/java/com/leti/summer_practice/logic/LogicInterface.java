@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public interface LogicInterface {
 
     class VertexInfo {
+
         public String name;
         public Integer color;
 
@@ -19,6 +20,7 @@ public interface LogicInterface {
     }
 
     class EdgeInfo {
+
         public String start;
         public String finish;
         public int weight;
@@ -44,9 +46,9 @@ public interface LogicInterface {
 
     void removeEdge(String start, String finish);
 
-    public VertexInfo getVertexInfo(String name);
+    VertexInfo getVertexInfo(String name);
 
-    public EdgeInfo getEdgeInfo(String start, String finish);
+    EdgeInfo getEdgeInfo(String start, String finish);
 
     ArrayList<VertexInfo> getVertices();
 
@@ -68,7 +70,7 @@ public interface LogicInterface {
 
     void killAlgorithm();
 
-    public boolean isGraphEmpty();
+    boolean isGraphEmpty();
 
-    public void deleteGraph();
+    void clearGraph();
 }

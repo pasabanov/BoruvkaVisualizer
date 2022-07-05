@@ -75,10 +75,6 @@ public class SummerPracticeController implements Initializable {
 
 //    private ArrayList<LogicInterface.EdgeInfo> newEdges = new ArrayList<>();
 
-    GraphMode graphMode = GraphMode.MOVING;
-
-    boolean graphExists = false;
-
     boolean paintNewEdgesRed = true;
 
 
@@ -116,7 +112,7 @@ public class SummerPracticeController implements Initializable {
                 double startY = (startCoords.getValue()) * CANVAS_HEIGHT / 2;
                 double finishX = (finishCoords.getKey()) * CANVAS_WIDTH / 2;
                 double finishY = (finishCoords.getValue()) * CANVAS_HEIGHT / 2;
-                Color color = (edge.color == null) ? DEFAULT_EDGE_COLOR : getColorByInt(edge.color);
+                Color color = (edge.color == null || logic.isAlgorithmFinished()) ? DEFAULT_EDGE_COLOR : getColorByInt(edge.color);
                 Line line = new Line(startX, startY, finishX, finishY);
                 line.setStrokeWidth(2 / canvas.getZoom());
                 line.setStroke(color);
@@ -148,6 +144,28 @@ public class SummerPracticeController implements Initializable {
                 canvas.draw(text);
             }
 
+            // final edges
+            if (logic.isAlgorithmFinished()) {
+                for (LogicInterface.EdgeInfo edge : logic.getAnswer()) {
+                    Pair<Double,Double> startCoords = verticesCoordsMap.get(edge.start),
+                            finishCoords = verticesCoordsMap.get(edge.finish);
+                    double startX = (startCoords.getKey()) * CANVAS_WIDTH / 2;
+                    double startY = (startCoords.getValue()) * CANVAS_HEIGHT / 2;
+                    double finishX = (finishCoords.getKey()) * CANVAS_WIDTH / 2;
+                    double finishY = (finishCoords.getValue()) * CANVAS_HEIGHT / 2;
+                    Color color = (edge.color == null) ? DEFAULT_EDGE_COLOR : getColorByInt(edge.color);
+                    Line line = new Line(startX, startY, finishX, finishY);
+                    line.setStrokeWidth(2 / canvas.getZoom());
+                    line.setStroke(color);
+                    canvas.draw(line);
+                    double textX = (startX + finishX) / 2;
+                    double textY = (startY + finishY) / 2;
+                    Text text = new Text(textX, textY, "" + edge.weight);
+                    text.setFont(Font.font(16 / canvas.getZoom()));
+                    canvas.draw(text);
+                }
+            }
+
             // drawing vertices
             for (LogicInterface.VertexInfo vertex : logic.getVertices()) {
                 String name = vertex.name;
@@ -177,7 +195,7 @@ public class SummerPracticeController implements Initializable {
         } catch (RuntimeException re) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(R.string("failed_to_load_file_alert_title"));
-            alert.setHeaderText(R.string("default_error_alert_header_text   "));
+            alert.setHeaderText(R.string("default_error_alert_header_text"));
             alert.setContentText(re.getMessage());
             alert.showAndWait();
             return;
@@ -186,7 +204,6 @@ public class SummerPracticeController implements Initializable {
         logTextArea.clear();
         newEdges.clear();
         canvas.redraw();
-        graphExists = true;
     }
 
     public void generateVerticesCoords(LogicInterface logic) {
@@ -201,7 +218,8 @@ public class SummerPracticeController implements Initializable {
 
     @FXML
     public void onStartClick(ActionEvent actionEvent) {
-        if (!graphExists)
+
+        if (logic.isGraphEmpty())
             return;
 
         if (!tryToStartAlgorithm())
@@ -220,7 +238,7 @@ public class SummerPracticeController implements Initializable {
     @FXML
     public void onNextStepClicked(ActionEvent actionEvent) {
 
-        if (!graphExists)
+        if (logic.isGraphEmpty())
             return;
 
         if (!logic.isAlgorithmStarted()) {
@@ -275,7 +293,7 @@ public class SummerPracticeController implements Initializable {
     }
 
     private void printAlgorithmResult() {
-        if (!graphExists || !logic.isAlgorithmFinished())
+        if (logic.isGraphEmpty() || !logic.isAlgorithmFinished())
             return;
 
         StringBuilder sb = new StringBuilder();
@@ -289,8 +307,7 @@ public class SummerPracticeController implements Initializable {
 
     @FXML
     public void onResetClicked(ActionEvent actionEvent) {
-        graphExists = false;
-        logic = new Logic();
+        logic.clearGraph();
         canvas.clear();
         logTextArea.clear();
         newEdges.clear();
