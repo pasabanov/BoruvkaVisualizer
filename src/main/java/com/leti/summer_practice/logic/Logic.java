@@ -88,8 +88,8 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-    public Graph loadFile(File file) {
-        return Graph.read_file(file);
+    public void loadFile(File file) {
+        graph = Graph.read_file(file);
     }
 
     @Override
