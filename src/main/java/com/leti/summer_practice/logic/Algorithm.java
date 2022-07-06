@@ -9,7 +9,8 @@ public class Algorithm {
     private Graph temporary_graph; //второй граф для поиска МОД
     private Graph.Edge[] result; //список списков ребер,
     // которые были добавлены в компоненты связности в конце шага
-    private Map<Graph.Node, Integer> hashTableNode = new HashMap<>(); //хэш-таблица для вершин и компонент
+    private Map<Graph.Node, Integer> hashTableNode; //хэш-таблица для вершин и компонент
+    private Map<Graph.Edge, Integer> edges_color;
 
     int length_components;
 
@@ -18,6 +19,8 @@ public class Algorithm {
         edges = graph1.get_edges(); //все ребра графа
         temporary_graph = new Graph();
         length_components = vertices.size();
+        edges_color = new HashMap<>();
+        hashTableNode = new HashMap<>();
 
         for (int i = 0; i < vertices.size(); i++) { //заполенение второго графа
             temporary_graph.create_vertex(vertices.get(i).get_name());
@@ -59,6 +62,8 @@ public class Algorithm {
         ArrayList<Graph.Node> neighbours = temporary_graph.get_neighbours(current);
         for (int i = 0; i < neighbours.size(); i++) {
             if (!all_vertices.get(neighbours.get(i)).val) {
+                Graph.Edge new_edge = temporary_graph.get_edge(current.get_name(), neighbours.get(i).get_name());
+                edges_color.put(new_edge, counter);
                 dfs(all_vertices, neighbours.get(i), counter);
             }
         }
@@ -108,8 +113,8 @@ public class Algorithm {
         return length_components == 1;
     }
 
-    ArrayList<Graph.Edge> get_answer(){
-        if(!isFinished()){
+    ArrayList<Graph.Edge> get_answer() {
+        if (!isFinished()) {
             throw new RuntimeException("Algorithm is not finished yet");
         }
         return temporary_graph.get_edges();
@@ -120,9 +125,11 @@ public class Algorithm {
     }
 
     public Integer get_edge_color(Graph.Node start_vertex, Graph.Node finish_vertex) {
-        if (hashTableNode.get(start_vertex).equals(hashTableNode.get(finish_vertex))) {
-            return hashTableNode.get(start_vertex);
+        if(!temporary_graph.edge_exist(start_vertex.get_name(),finish_vertex.get_name())){
+            return null;
         }
-        return null;
+        Graph.Edge edge = temporary_graph.get_edge(start_vertex.get_name(), finish_vertex.get_name());
+
+        return edges_color.get(edge);
     }
 }

@@ -196,4 +196,12 @@ public class Logic implements LogicInterface {
         killAlgorithm();
         graph.clear();
     }
+
+     public boolean edgeExist(String start, String finish) {
+        return graph.edge_exist(start, finish);
+    }
+
+    public boolean vertexExist(String name) {
+        return graph.vertex_exist(name);
+    }
 }
