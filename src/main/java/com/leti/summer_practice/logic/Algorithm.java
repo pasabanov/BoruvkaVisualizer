@@ -125,7 +125,7 @@ public class Algorithm {
     }
 
     public Integer get_edge_color(Graph.Node start_vertex, Graph.Node finish_vertex) {
-        if(!temporary_graph.edge_exist(start_vertex.get_name(),finish_vertex.get_name())){
+        if(!temporary_graph.edge_exists(start_vertex.get_name(),finish_vertex.get_name())){
             return null;
         }
         Graph.Edge edge = temporary_graph.get_edge(start_vertex.get_name(), finish_vertex.get_name());
