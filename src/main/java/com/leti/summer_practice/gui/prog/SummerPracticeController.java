@@ -7,7 +7,10 @@ import com.leti.summer_practice.logic.LogicInterface;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -19,7 +22,6 @@ import javafx.util.Pair;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class SummerPracticeController implements Initializable {
 
