@@ -174,6 +174,14 @@ public class Graph {
 
     }
 
+    boolean edge_exist(String start, String finish) {
+        return adress.containsKey(start) && adress.containsKey(finish);
+    }
+
+    boolean vertex_exist(String name) {
+        return adress.containsKey(name);
+    }
+
     private static String[] check_first(String[] values) {
         if (values[0].equals("")) {
             ArrayList<String> temp = new ArrayList<>(Arrays.asList(values));
@@ -417,6 +425,26 @@ public class Graph {
 
         public int get_weight() {
             return weight;
+        }
+
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other instanceof Edge) {
+                Edge other_edge = (Edge) other;
+                if ((start.equals(other_edge.start) && finish.equals(other_edge.finish)) || (finish.equals(other_edge.start) && start.equals(other_edge.finish))) {
+                    if (weight == other_edge.weight) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return start.hashCode() + finish.hashCode();
         }
 
         @Override //РґР»СЏ С‚РµСЃС‚РѕРІ = РїРѕС‚РѕРј СѓРґР°Р»РёРј
