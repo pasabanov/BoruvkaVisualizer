@@ -19,6 +19,7 @@ import javafx.util.Pair;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class SummerPracticeController implements Initializable {
 
@@ -107,6 +108,7 @@ public class SummerPracticeController implements Initializable {
         canvas.setZoom(CANVAS_DEFAULT_ZOOM / Math.min(CANVAS_WIDTH, CANVAS_HEIGHT) * (500));
 
         canvas.setDrawer(graphCanvas -> {
+
             Map<String, Pair<Double,Double>> verticesCoordsMap = this.verticesCoordsMap;
             if (verticesCoordsMap.isEmpty())
                 return;
@@ -192,11 +194,29 @@ public class SummerPracticeController implements Initializable {
 
 
     @FXML
+    public void onClearGraphClicked(ActionEvent actionEvent) {
+        logic.clearGraph();
+        canvas.clear();
+        logTextArea.clear();
+        newEdges.clear();
+        verticesCoordsMap.clear();
+    }
+
+
+    @FXML
     public void onLoadFromFileClick(ActionEvent actionEvent) {
+
+        class LastDirectoryContainer {
+            public static File lastDirectory = null;
+        }
+
         FileChooser fileChooser = new FileChooser();
+        if (LastDirectoryContainer.lastDirectory != null)
+            fileChooser.setInitialDirectory(LastDirectoryContainer.lastDirectory);
         File file = fileChooser.showOpenDialog(SummerPracticeApplication.getApplication().getPrimaryStage());
         if (file == null)
             return;
+        LastDirectoryContainer.lastDirectory = file.getParentFile();
         try {
             logic.loadFile(file);
         } catch (RuntimeException re) {
@@ -314,11 +334,10 @@ public class SummerPracticeController implements Initializable {
 
 
     @FXML
-    public void onResetClicked(ActionEvent actionEvent) {
-        logic.clearGraph();
-        canvas.clear();
+    public void onAgainClicked(ActionEvent actionEvent) {
         logTextArea.clear();
         newEdges.clear();
-        verticesCoordsMap.clear();
+        logic.killAlgorithm();
+        canvas.redraw();
     }
 }

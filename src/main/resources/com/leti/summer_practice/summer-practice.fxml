@@ -55,6 +55,12 @@
                        onAction="#onLoadFromFileClick"
                        text="%load_from_file"
                        mnemonicParsing="false"/>
+
+               <Button fx:id="clearGraphButton"
+                       onAction="#onClearGraphClicked"
+                       text="%clear_graph"
+                       mnemonicParsing="false"/>
+
             </VBox>
          </top>
          <bottom>
@@ -97,10 +103,11 @@
                        text="%next_step"
                        mnemonicParsing="false"/>
 
-               <Button fx:id="resetButton"
-                       onAction="#onResetClicked"
-                       text="%reset"
+               <Button fx:id="againButton"
+                       onAction="#onAgainClicked"
+                       text="%again"
                        mnemonicParsing="false"/>
+
             </VBox>
          </bottom>
       </BorderPane>

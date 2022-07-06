@@ -188,19 +188,23 @@ public class Logic implements LogicInterface {
         return res;
     }
 
+    @Override
     public boolean isGraphEmpty() {
         return graph.get_vertex_count() == 0;
     }
 
+    @Override
     public void clearGraph() {
         killAlgorithm();
         graph.clear();
     }
 
+    @Override
      public boolean edgeExist(String start, String finish) {
         return graph.edge_exist(start, finish);
     }
 
+    @Override
     public boolean vertexExist(String name) {
         return graph.vertex_exist(name);
     }
