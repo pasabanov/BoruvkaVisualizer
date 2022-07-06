@@ -175,7 +175,12 @@ public class Graph {
     }
 
     boolean edge_exist(String start, String finish) {
-        return adress.containsKey(start) && adress.containsKey(finish);
+        if (!adress.containsKey(start) || !adress.containsKey(finish)) {
+            return false;
+        }
+        int start_index = adress.get(start);
+        int finish_index = adress.get(finish);
+        return matrix.get(start_index).get(finish_index) != null;
     }
 
     boolean vertex_exist(String name) {
@@ -278,16 +283,13 @@ public class Graph {
     }
 
     public Edge get_edge(String start, String finish) {
-        if (!adress.containsKey(start) || !adress.containsKey(finish)) {
-            throw new UnsupportedOperationException("Invalid vertices for edge");
+        if (!edge_exist(start, finish)) {
+            throw new UnsupportedOperationException("Edge does not exist");
 
         }
         int start_index = adress.get(start);
         int finish_index = adress.get(finish);
         int weight = matrix.get(start_index).get(finish_index);
-        if (weight == 0) {
-            throw new UnsupportedOperationException("Edge does not exist");
-        }
         return new Edge(new Node(start), new Node(finish), weight);
     }
 
