@@ -200,12 +200,12 @@ public class Logic implements LogicInterface {
     }
 
     @Override
-     public boolean edgeExist(String start, String finish) {
-        return graph.edge_exist(start, finish);
+     public boolean edgeExists(String start, String finish) {
+        return graph.edge_exists(start, finish);
     }
 
     @Override
-    public boolean vertexExist(String name) {
-        return graph.vertex_exist(name);
+    public boolean vertexExists(String name) {
+        return graph.vertex_exists(name);
     }
 }

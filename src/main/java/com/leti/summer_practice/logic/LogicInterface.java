@@ -68,9 +68,9 @@ public interface LogicInterface {
 
     boolean isAlgorithmStarted();
 
-    boolean edgeExist(String start, String finish);
+    boolean edgeExists(String start, String finish);
 
-    boolean vertexExist(String name);
+    boolean vertexExists(String name);
 
     void killAlgorithm();
 
