@@ -212,7 +212,7 @@ public class SummerPracticeController implements Initializable {
 
         nextStep();
 
-        runTimerAndSkip();
+        runTimerWithDelay();
     }
 
     private void nextStep() {
@@ -421,7 +421,7 @@ public class SummerPracticeController implements Initializable {
         }, delay, period);
     }
 
-    private void runTimerAndSkip() {
+    private void runTimerWithDelay() {
         long delay_period = (long)(1000 / Double.parseDouble(speedTextField.getText()));
         runTimer(delay_period, delay_period);
     }
