@@ -16,6 +16,7 @@ import javafx.scene.shape.Shape;
 import java.util.Collection;
 import java.util.function.Consumer;
 
+
 public class VectorCanvas extends Pane {
 
 
