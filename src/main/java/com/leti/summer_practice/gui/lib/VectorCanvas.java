@@ -29,7 +29,6 @@ public class VectorCanvas extends Pane {
         }
 
         public VectorCanvasContent(double scale) {
-//            this.scale = new SimpleDoubleProperty(scale);
 
             this.scale = new ReadOnlyDoubleWrapper(scale);
 
@@ -127,14 +126,17 @@ public class VectorCanvas extends Pane {
 
             double f = (newScale / oldScale) - 1;
 
-            content.setScale(newScale);
-
             if (!lockCamera) {
+
                 double dx = event.getX() - content.getBoundsInParent().getMinX() - content.getBoundsInParent().getWidth() / 2;
                 double dy = event.getY() - content.getBoundsInParent().getMinY() - content.getBoundsInParent().getHeight() / 2;
 
+                content.setScale(newScale);
+
                 content.setTranslateX(content.getTranslateX() - f * dx);
                 content.setTranslateY(content.getTranslateY() - f * dy);
+            } else {
+                content.setScale(newScale);
             }
 
             event.consume();
