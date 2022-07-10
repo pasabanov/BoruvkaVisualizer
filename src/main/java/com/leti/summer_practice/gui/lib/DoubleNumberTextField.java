@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
+
 public class DoubleNumberTextField extends TextField {
 
 
