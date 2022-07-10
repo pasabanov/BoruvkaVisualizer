@@ -58,6 +58,11 @@ public class VectorCanvas extends Pane {
     public static final double MAX_SCALE = 1000;
     public static final double DEFAULT_SCALE = 1;
 
+    public static final boolean DEFAULT_LOCK_CAMERA = false;
+    public static final boolean DEFAULT_LOCK_SCALE = true;
+
+    public static final boolean DEFAULT_SCALE_ON_RESIZE = true;
+
 
     public static final Consumer<VectorCanvas> DEFAULT_DRAWER = canvas -> {
         Line[] lines = {
@@ -152,10 +157,10 @@ public class VectorCanvas extends Pane {
 
     private double scaleSpeed = DEFAULT_SCALE_SPEED;
 
-    private boolean lockCamera = false;
-    private boolean lockScale = false;
+    private boolean lockCamera = DEFAULT_LOCK_CAMERA;
+    private boolean lockScale = DEFAULT_LOCK_SCALE;
 
-    private boolean scaleOnResize = true;
+    private boolean scaleOnResize = DEFAULT_SCALE_ON_RESIZE;
 
 
     public VectorCanvas() {
