@@ -3,7 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import com.leti.summer_practice.gui.lib.VectorCanvas?>
+<?import com.leti.summer_practice.gui.lib.DoubleNumberTextField?>
+
+<?import com.leti.summer_practice.gui.prog.GraphCanvas?>
 
 <BorderPane maxHeight="-Infinity"
             maxWidth="-Infinity"
@@ -23,7 +25,7 @@
                  prefWidth="600.0"
                  BorderPane.alignment="CENTER">
 
-         <VectorCanvas fx:id="canvas" minWidth="1" minHeight="1" />
+         <GraphCanvas fx:id="canvas" minWidth="1" minHeight="1" prefWidth="590" prefHeight="540"/>
 
          <TextArea fx:id="logTextArea"
                    editable="false"
@@ -47,6 +49,7 @@
                   BorderPane.alignment="CENTER">
 
                <Button fx:id="modeButton"
+                       onAction="#onModeClick"
                        text="%draw_mode"
                        mnemonicParsing="false"/>
 
@@ -79,15 +82,19 @@
 
                   <Label text="%speed"/>
 
-                  <Button text="-"
+                  <Button fx:id="minusSpeedButton"
+                          onAction="#onMinusSpeedClick"
+                          text="-"
                           mnemonicParsing="false"/>
 
-                  <TextField fx:id="speedTextField"
-                             text="1.0"
-                             prefWidth="40.0"
-                             alignment="CENTER"/>
+                  <DoubleNumberTextField fx:id="speedTextField"
+                                         text="1.0"
+                                         prefWidth="40.0"
+                                         alignment="CENTER"/>
 
-                  <Button text="+"
+                  <Button fx:id="plusSpeedButton"
+                          onAction="#onPlusSpeedClick"
+                          text="+"
                           mnemonicParsing="false"/>
 
                   <Region HBox.hgrow="ALWAYS"/>

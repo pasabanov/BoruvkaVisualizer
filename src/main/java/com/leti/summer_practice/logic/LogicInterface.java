@@ -10,10 +10,10 @@ public interface LogicInterface {
         public String name;
         public Integer color;
 
-        VertexInfo() {
+        public VertexInfo() {
         }
 
-        VertexInfo(String name, Integer color) {
+        public VertexInfo(String name, Integer color) {
             this.name = name;
             this.color = color;
         }
@@ -26,16 +26,21 @@ public interface LogicInterface {
         public int weight;
         public Integer color;
 
-        EdgeInfo() {
+        public EdgeInfo() {
         }
 
-        EdgeInfo(String start, String finish, int weight, Integer color) {
+        public EdgeInfo(String start, String finish, int weight, Integer color) {
             this.start = start;
             this.finish = finish;
             this.weight = weight;
             this.color = color;
         }
 
+        public String toStringWithoutWeight() {
+            if (start.compareTo(finish) > 0)
+                return finish + " --- " + start;
+            return start + " --- " + finish;
+        }
     }
 
     void removeVertex(String name);
