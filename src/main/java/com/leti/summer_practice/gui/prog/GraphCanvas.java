@@ -90,8 +90,10 @@ public class GraphCanvas extends VectorCanvas {
 
         public final EventHandler<MouseEvent> onMouseClickedEventHandler = event -> {
 
-            if (graphMode != GraphMode.DRAWING)
+            if (graphMode != GraphMode.DRAWING) {
+                event.consume();
                 return;
+            }
 
             Circle circle = (Circle) event.getSource();
             String name = reversedVerticesMap.get(circle);
@@ -103,6 +105,16 @@ public class GraphCanvas extends VectorCanvas {
                     selectedCircleName = name;
                     redraw();
                 } else {
+
+                    if (logic.edgeExists(selectedCircleName, name)) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle(null);
+                        alert.setHeaderText(R.string("edge_between_this_vertices_already_exists"));
+                        alert.setContentText(null);
+                        alert.showAndWait();
+                        event.consume();
+                        return;
+                    }
 
                     TextInputDialog textInputDialog = new TextInputDialog();
                     textInputDialog.setTitle(null);
@@ -138,8 +150,10 @@ public class GraphCanvas extends VectorCanvas {
                     );
 
                     Optional<String> optionalWeight = textInputDialog.showAndWait();
-                    if (optionalWeight.isEmpty())
+                    if (optionalWeight.isEmpty()) {
+                        event.consume();
                         return;
+                    }
 
                     Integer weight = Integer.valueOf(optionalWeight.get());
 
