@@ -207,12 +207,15 @@ public class SummerPracticeController implements Initializable {
     @FXML
     public void onNextStepClicked(ActionEvent actionEvent) {
 
-        if (autoStepTimer.hasCurrentTimerTask())
+        boolean autoSolvingWasRunning = autoStepTimer.hasCurrentTimerTask();
+
+        if (autoSolvingWasRunning)
             autoStepTimer.cancel();
 
         nextStep();
 
-        runTimerWithDelay();
+        if (autoSolvingWasRunning)
+            runTimerWithDelay();
     }
 
     private void nextStep() {
