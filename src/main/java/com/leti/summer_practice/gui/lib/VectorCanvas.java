@@ -199,6 +199,7 @@ public class VectorCanvas extends Pane {
         super.resize(width, height);
     }
 
+
     public void clear() {
         clearContentChildren();
     }

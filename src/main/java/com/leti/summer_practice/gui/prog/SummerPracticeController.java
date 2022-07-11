@@ -63,7 +63,7 @@ public class SummerPracticeController implements Initializable {
     private boolean answerAlreadyPrinted = false;
 
 
-    SingleTaskTimer autoStepTimer = new SingleTaskTimer(true);
+    private final SingleTaskTimer autoStepTimer = new SingleTaskTimer(true);
 
 
     @Override
