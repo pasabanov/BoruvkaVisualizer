@@ -10,14 +10,17 @@ public class SingleTaskTimer extends Timer {
     public static final long NO_TASK_COMPLETED = -1;
 
 
-    private long lastCompletedTaskTime = NO_TASK_COMPLETED; // nanoseconds
+    private long lastCompletedTaskTime = NO_TASK_COMPLETED; // milliseconds
 
 
     private TimerTask currentTimerTask = null;
 
 
     public SingleTaskTimer() {
+    }
 
+    public SingleTaskTimer(boolean isDaemon) {
+        super(isDaemon);
     }
 
 
@@ -28,7 +31,7 @@ public class SingleTaskTimer extends Timer {
             @Override
             public void run() {
                 task.run();
-                lastCompletedTaskTime = System.nanoTime();
+                lastCompletedTaskTime = System.currentTimeMillis();
             }
         };
         super.schedule(currentTimerTask, delay);
@@ -40,7 +43,7 @@ public class SingleTaskTimer extends Timer {
             @Override
             public void run() {
                 task.run();
-                lastCompletedTaskTime = System.nanoTime();
+                lastCompletedTaskTime = System.currentTimeMillis();
             }
         };
         super.schedule(currentTimerTask, time);
@@ -52,7 +55,7 @@ public class SingleTaskTimer extends Timer {
             @Override
             public void run() {
                 task.run();
-                lastCompletedTaskTime = System.nanoTime();
+                lastCompletedTaskTime = System.currentTimeMillis();
             }
         };
         super.schedule(currentTimerTask, delay, period);
@@ -64,7 +67,7 @@ public class SingleTaskTimer extends Timer {
             @Override
             public void run() {
                 task.run();
-                lastCompletedTaskTime = System.nanoTime();
+                lastCompletedTaskTime = System.currentTimeMillis();
             }
         };
         super.schedule(currentTimerTask, firstTime, period);
@@ -76,7 +79,7 @@ public class SingleTaskTimer extends Timer {
             @Override
             public void run() {
                 task.run();
-                lastCompletedTaskTime = System.nanoTime();
+                lastCompletedTaskTime = System.currentTimeMillis();
             }
         };
         super.scheduleAtFixedRate(currentTimerTask, delay, period);
@@ -88,7 +91,7 @@ public class SingleTaskTimer extends Timer {
             @Override
             public void run() {
                 task.run();
-                lastCompletedTaskTime = System.nanoTime();
+                lastCompletedTaskTime = System.currentTimeMillis();
             }
         };
         super.scheduleAtFixedRate(currentTimerTask, firstTime, period);
@@ -104,7 +107,7 @@ public class SingleTaskTimer extends Timer {
 
 
     public long timeFromLastCompletion() {
-        return System.nanoTime() - lastCompletedTaskTime;
+        return System.currentTimeMillis() - lastCompletedTaskTime;
     }
 
 
