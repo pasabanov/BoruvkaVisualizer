@@ -145,7 +145,7 @@ public class SummerPracticeController implements Initializable {
             logTextArea.clear();
             canvas.clearSpecialColorEdges();
             canvas.setLogic(logic);
-            canvas.clear();
+            canvas.redraw();
         }
     }
 
@@ -237,6 +237,8 @@ public class SummerPracticeController implements Initializable {
         }
 
         if (logic.isAlgorithmFinished()) {
+            if (!answerAlreadyPrinted)
+                logTextArea.appendText(R.string("connecting_components") + LOG_DIVIDER);
             printAlgorithmResult();
             canvas.clearSpecialColorEdges();
             canvas.redraw();
@@ -274,11 +276,11 @@ public class SummerPracticeController implements Initializable {
 
             canvas.getSpecialColorEdges().clear();
 
-            if (logic.isAlgorithmFinished()) {
+            logTextArea.appendText(R.string("connecting_components") + LOG_DIVIDER);
+
+            if (logic.isAlgorithmFinished())
                 printAlgorithmResult();
-            } else {
-                logTextArea.appendText(R.string("connecting_components") + LOG_DIVIDER);
-            }
+
         } else {
 
             canvas.addSpecialColorEdge(newEdge);
