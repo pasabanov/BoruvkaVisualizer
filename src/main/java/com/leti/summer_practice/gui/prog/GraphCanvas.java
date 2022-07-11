@@ -282,7 +282,7 @@ public class GraphCanvas extends VectorCanvas {
     private final Map<String,Circle> verticesMap = new HashMap<>();
     private final Map<Circle,String> reversedVerticesMap = new HashMap<>();
 
-    private final Map<String, Text> verticesTextsMap = new HashMap<>();
+    private final Map<String,Text> verticesTextsMap = new HashMap<>();
 
     private final Map<Pair<String,String>,Line> edgesMap = new HashMap<>();
     private final Map<Line,Pair<String,String>> reversedEdgesMap = new HashMap<>();
