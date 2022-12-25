@@ -6,35 +6,34 @@ import java.util.*;
 public class Graph {
 
     private ArrayList<ArrayList<Integer>> matrix;
-    private Map<String, Integer> adress;
+    private Map<String, Integer> address;
     int max_index;
     LinkedList<Integer> available_numbers;
 
     public Graph() {
         matrix = new ArrayList<>();
-        adress = new HashMap<>();
+        address = new HashMap<>();
         available_numbers = new LinkedList<>();
         max_index = 0;
     }
 
     public int get_vertex_count() {
-        return adress.size();
+        return address.size();
     }
 
     public void clear() {
         matrix.clear();
-        adress.clear();
+        address.clear();
         available_numbers.clear();
         max_index = 0;
     }
 
     public boolean is_connected() {
         Map<Graph.Node, Boolean> closed = new HashMap<>();
-        Set<String> entry = adress.keySet();
+        Set<String> entry = address.keySet();
         Iterator<String> iter = entry.iterator();
-        if (!iter.hasNext()) {
+        if (!iter.hasNext())
             return true;
-        }
         Node start_vertex = new Node(iter.next());
         int vertex_count = dfs(closed, start_vertex);
         return vertex_count == get_vertex_count();
@@ -45,15 +44,14 @@ public class Graph {
         closed.put(current, true);
         int res = 1;
         ArrayList<Graph.Node> neighbours = get_neighbours(current);
-        for (int i = 0; i < neighbours.size(); i++) {
-            if (!closed.containsKey(neighbours.get(i))) {
-                res = res + dfs(closed, neighbours.get(i));
-            }
-        }
+        for (Node neighbour : neighbours)
+            if (!closed.containsKey(neighbour))
+                res = res + dfs(closed, neighbour);
         return res;
     }
 
     private static class Graph_builder {
+
         Graph result;
         String[] vertex_names;
 
@@ -74,40 +72,33 @@ public class Graph {
         }
 
         void init_names(String[] names) {
-            for (int i = 0; i < names.length; i++) {
-                if (names[i].length() > 3 || !names[i].chars().allMatch(Character::isLetter)) {
+            for (String name : names) {
+                if (name.length() > 3 || !name.chars().allMatch(Character::isLetter))
                     throw new RuntimeException("Error while reading file:invalid vertex name");
-                }
-                result.create_vertex(names[i]);
+                result.create_vertex(name);
             }
             vertex_names = names;
         }
 
         private void add_directed_edge(String start, String finish, Integer weight) {
-            int start_index = result.adress.get(start);
-            int finish_index = result.adress.get(finish);
+            int start_index = result.address.get(start);
+            int finish_index = result.address.get(finish);
             result.matrix.get(start_index).set(finish_index, weight);
         }
 
         private void check_mode(String[] row) {
-            if (current_line_count > result.get_vertex_count()) {
+
+            if (current_line_count > result.get_vertex_count())
                 throw new RuntimeException("Error while reading file:The number of adjacency matrix rows does not match yhe number of columns");
-            }
 
             if (row[0].chars().allMatch(Character::isLetter)) {
-                if (!column_mode) {
+                if (!column_mode)
                     throw new RuntimeException("Error while reading file:Incorrect matrix");
-                }
-
-            } else {
-
-                if (column_mode) {
-                    if (first_iteration) {
-                        column_mode = false;
-                    } else {
-                        throw new RuntimeException("Error while reading file:Incorrect matrix");
-                    }
-                }
+            } else if (column_mode) {
+                if (first_iteration)
+                    column_mode = false;
+                else
+                    throw new RuntimeException("Error while reading file:Incorrect matrix");
             }
             if (first_iteration) {
                 if ((row.length == 1 && !column_mode) || (row.length == 2 && column_mode)) {
@@ -116,30 +107,25 @@ public class Graph {
                 } else {
                     correct_line_length = result.get_vertex_count();
                 }
-                if (column_mode) {
+                if (column_mode)
                     correct_line_length++;
-                }
             }
-            if (triangle_mode && !first_iteration) {
+            if (triangle_mode && !first_iteration)
                 correct_line_length++;
-            }
 
-            if (row.length != correct_line_length) {
+            if (row.length != correct_line_length)
                 throw new RuntimeException("Error while reading file:Incorrect row length");
-            }
 
-            if (column_mode) {
-                if (!row[0].equals(vertex_names[current_line_count])) {
-                    throw new RuntimeException("Error while reading file: Incorrect  name column");
-                }
-            }
+            if (column_mode && !row[0].equals(vertex_names[current_line_count]))
+                throw new RuntimeException("Error while reading file: Incorrect  name column");
+
             first_iteration = false;
         }
 
         void read_row(String[] row) {
             check_mode(row);
             int start_index = column_mode ? 1 : 0;
-            for (int i = start_index; i < row.length; i++) {
+            for (int i = start_index; i < row.length; i++, current_line_count++) {
                 if (!row[i].equals("-")) {
                     try {
                         int new_val = Integer.parseInt(row[i]);
@@ -155,36 +141,29 @@ public class Graph {
                     }
                 }
             }
-            current_line_count++;
         }
 
         Graph get_result() {
-            if (column_mode) {
+            if (column_mode)
                 current_line_count++;
-            }
-            if (current_line_count != correct_line_length) {
+            if (current_line_count != correct_line_length)
                 throw new RuntimeException("Error while reading file: Adjacency matrix is not square");
-            }
-            if (!result.symmetry_check()) {
+            if (!result.symmetry_check())
                 throw new RuntimeException("Error while reading file:The  Adjacency matrix is not symmetrical");
-            }
             return result;
         }
-
-
     }
 
     boolean edge_exists(String start, String finish) {
-        if (!adress.containsKey(start) || !adress.containsKey(finish)) {
+        if (!address.containsKey(start) || !address.containsKey(finish))
             return false;
-        }
-        int start_index = adress.get(start);
-        int finish_index = adress.get(finish);
+        int start_index = address.get(start);
+        int finish_index = address.get(finish);
         return matrix.get(start_index).get(finish_index) != null;
     }
 
     boolean vertex_exists(String name) {
-        return adress.containsKey(name);
+        return address.containsKey(name);
     }
 
     private static String[] check_first(String[] values) {
@@ -235,30 +214,27 @@ public class Graph {
 
 
     public Node create_vertex(String name) {
-        if (adress.containsKey(name)) {
+        if (address.containsKey(name))
             throw new UnsupportedOperationException("Vertex with same name already exists");
-        }
         Node new_node = new Node(name);
         int new_index;
         if (available_numbers.size() > 0) {
             new_index = available_numbers.removeLast();
-            adress.put(name, new_index);
+            address.put(name, new_index);
         } else {
             new_index = max_index;
             max_index++;
-            adress.put(name, new_index);
+            address.put(name, new_index);
             resize_matrix();
         }
-
         return new_node;
     }
 
     public void delete_vertex(Node vertex) {
-        if (!adress.containsKey(vertex.name)) {
+        if (!address.containsKey(vertex.name))
             throw new UnsupportedOperationException("Invalid vertex name");
-        }
-        int vertex_index = adress.get(vertex.name);
-        adress.remove(vertex.name);
+        int vertex_index = address.get(vertex.name);
+        address.remove(vertex.name);
         available_numbers.addLast(vertex_index);
         for (int i = 0; i < matrix.size(); i++) {
             matrix.get(i).set(vertex_index, null);
@@ -268,7 +244,7 @@ public class Graph {
 
     public ArrayList<Node> get_vertices() {
         ArrayList<Node> res = new ArrayList<>();
-        for (String name : adress.keySet()) {
+        for (String name : address.keySet()) {
             Node current = new Node(name);
             res.add(current);
         }
@@ -276,59 +252,52 @@ public class Graph {
     }
 
     public Node get_vertex(String name) {
-        if (!adress.containsKey(name)) {
+        if (!address.containsKey(name))
             throw new UnsupportedOperationException("there is no such vertex of the graph");
-        }
         return new Node(name);
     }
 
     public Edge get_edge(String start, String finish) {
-        if (!edge_exists(start, finish)) {
+        if (!edge_exists(start, finish))
             throw new UnsupportedOperationException("Edge does not exist");
-
-        }
-        int start_index = adress.get(start);
-        int finish_index = adress.get(finish);
+        int start_index = address.get(start);
+        int finish_index = address.get(finish);
         int weight = matrix.get(start_index).get(finish_index);
         return new Edge(new Node(start), new Node(finish), weight);
     }
 
     public Edge create_edge(Node start, Node finish, int weight) {
-        if (!adress.containsKey(start.name) || !adress.containsKey(finish.name)) {
+        if (!address.containsKey(start.name) || !address.containsKey(finish.name))
             throw new UnsupportedOperationException("Invalid vertices for edge");
-        }
-        int start_index = adress.get(start.name);
-        int finish_index = adress.get(finish.name);
-        if (matrix.get(start_index).get(finish_index) != null) {
-            if (matrix.get(start_index).get(finish_index) == weight) {
+        int start_index = address.get(start.name);
+        int finish_index = address.get(finish.name);
+        if (matrix.get(start_index).get(finish_index) != null)
+            if (matrix.get(start_index).get(finish_index) == weight)
                 return new Edge(start, finish, weight);
-            }
-            throw new UnsupportedOperationException("such an edge already exists");
-        }
+            else
+                throw new UnsupportedOperationException("such an edge already exists");
         matrix.get(start_index).set(finish_index, weight);
         matrix.get(finish_index).set(start_index, weight);
         return new Edge(start, finish, weight);
     }
 
     public void delete_edge(Edge to_delete) {
-        if (!adress.containsKey(to_delete.start.name) || !adress.containsKey(to_delete.finish.name)) {
+        if (!address.containsKey(to_delete.start.name) || !address.containsKey(to_delete.finish.name))
             throw new UnsupportedOperationException("Edge does not exist");
-        }
-        int start_index = adress.get(to_delete.start.name);
-        int finish_index = adress.get(to_delete.finish.name);
+        int start_index = address.get(to_delete.start.name);
+        int finish_index = address.get(to_delete.finish.name);
         matrix.get(start_index).set(finish_index, null);
         matrix.get(finish_index).set(start_index, null);
     }
 
     public ArrayList<Edge> get_edges() {
         ArrayList<Edge> res = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : adress.entrySet()) {
+        for (Map.Entry<String, Integer> entry : address.entrySet()) {
             int current_vertex = entry.getValue();
-            for (Map.Entry<String, Integer> entry1 : adress.entrySet()) {
+            for (Map.Entry<String, Integer> entry1 : address.entrySet()) {
                 int current_index = entry1.getValue();
-                if (current_vertex < current_index || matrix.get(current_vertex).get(current_index) == null) {
+                if (current_vertex < current_index || matrix.get(current_vertex).get(current_index) == null)
                     continue;
-                }
                 Node start = new Node(entry.getKey());
                 Node finish = new Node(entry1.getKey());
                 int weight = matrix.get(current_vertex).get(current_index);
@@ -339,12 +308,11 @@ public class Graph {
     }
 
     ArrayList<Node> get_neighbours(Node current) {
-        if (!adress.containsKey(current.name)) {
+        if (!address.containsKey(current.name))
             throw new UnsupportedOperationException("there is no such vertex of the graph");
-        }
         ArrayList<Node> res = new ArrayList<>();
-        int current_index = adress.get(current.name);
-        for (Map.Entry<String, Integer> entry : adress.entrySet()) {
+        int current_index = address.get(current.name);
+        for (Map.Entry<String, Integer> entry : address.entrySet()) {
             if (entry.getValue() == current_index || matrix.get(current_index).get(entry.getValue()) == null) {
                 continue;
             }
@@ -356,18 +324,17 @@ public class Graph {
 
 
     private void resize_matrix() {
-        for (int i = 0; i < matrix.size(); i++) {
-            matrix.get(i).add(null);
-        }
+        for (ArrayList<Integer> integers : matrix)
+            integers.add(null);
         ArrayList<Integer> new_list = new ArrayList<>();
-        for (int i = 0; i <= matrix.size(); i++) {
+        for (int i = 0; i <= matrix.size(); i++)
             new_list.add(null);
-        }
         matrix.add(new_list);
     }
 
 
     public static class Node {
+
         private String name;
 
         private Node(String name) {
@@ -378,24 +345,17 @@ public class Graph {
             return name;
         }
 
-        @Override //РґР»СЏ С‚РµСЃС‚РѕРІ - РїРѕС‚РѕРј СѓРґР°Р»РёРј
+        @Override
         public String toString() {
             return name;
         }
 
         @Override
         public boolean equals(Object other) {
-            if (other == this) {
+            if (other == this)
                 return true;
-            }
-
-            if (other instanceof Node) {
-                Node current = (Node) other;
-                if (current.name.equals(this.name)) {
-                    return true;
-                }
-            }
-
+            if (other instanceof Node current)
+                return current.name.equals(this.name);
             return false;
         }
 
@@ -430,17 +390,12 @@ public class Graph {
         }
 
         public boolean equals(Object other) {
-            if (this == other) {
+            if (this == other)
                 return true;
-            }
-            if (other instanceof Edge) {
-                Edge other_edge = (Edge) other;
-                if ((start.equals(other_edge.start) && finish.equals(other_edge.finish)) || (finish.equals(other_edge.start) && start.equals(other_edge.finish))) {
-                    if (weight == other_edge.weight) {
-                        return true;
-                    }
-                }
-            }
+            if (other instanceof Edge other_edge)
+                if ((start.equals(other_edge.start) && finish.equals(other_edge.finish))
+                        || (finish.equals(other_edge.start) && start.equals(other_edge.finish)))
+                    return weight == other_edge.weight;
             return false;
         }
 
@@ -449,9 +404,9 @@ public class Graph {
             return start.hashCode() + finish.hashCode();
         }
 
-        @Override //РґР»СЏ С‚РµСЃС‚РѕРІ = РїРѕС‚РѕРј СѓРґР°Р»РёРј
+        @Override
         public String toString() {
-            return new String("( " + start.name + " " + finish.name + " " + weight + " )");
+            return "( " + start.name + " " + finish.name + " " + weight + " )";
         }
     }
 }
