@@ -49,13 +49,11 @@ public class Logic implements LogicInterface {
             Graph.Node vertex = graph.get_vertex(name);
             color = algorithm.get_vertex_color(vertex);
         }
-
         return new VertexInfo(name, color);
     }
 
     @Override
     public EdgeInfo getEdgeInfo(String start, String finish) {
-
         Integer color;
         if (algorithm == null) {
             color = null;
@@ -75,11 +73,10 @@ public class Logic implements LogicInterface {
         for (Graph.Node node : nodes) {
             VertexInfo vertexInfo = new VertexInfo();
             vertexInfo.name = node.get_name();
-            if (algorithm == null) {
+            if (algorithm == null)
                 vertexInfo.color = null;
-            } else {
+            else
                 vertexInfo.color = algorithm.get_vertex_color(node);
-            }
             vertexInfos.add(vertexInfo);
         }
         return vertexInfos;
@@ -94,11 +91,10 @@ public class Logic implements LogicInterface {
             edge_info.start = edge.get_start().get_name();
             edge_info.finish = edge.get_finish().get_name();
             edge_info.weight = edge.get_weight();
-            if (algorithm == null) {
+            if (algorithm == null)
                 edge_info.color = null;
-            } else {
+            else
                 edge_info.color = algorithm.get_edge_color(edge.get_start(), edge.get_finish());
-            }
             edge_infos.add(edge_info);
         }
         return edge_infos;
@@ -112,12 +108,10 @@ public class Logic implements LogicInterface {
 
     @Override
     public void startAlgorithm() {
-        if (algorithm != null) {
+        if (algorithm != null)
             return;
-        }
-        if (!graph.is_connected()) {
+        if (!graph.is_connected())
             throw new RuntimeException("Graph is not connected");
-        }
         algorithm = new Algorithm(graph);
         current_step_edges = algorithm.get_new_edges();
         current_edge = 0;
@@ -125,12 +119,10 @@ public class Logic implements LogicInterface {
 
     @Override
     public EdgeInfo getNewEdge() {
-        if (algorithm == null) {
+        if (algorithm == null)
             throw new RuntimeException("Algorithm is not started");
-        }
-        if (current_step_edges == null || current_edge == current_step_edges.length) {
+        if (current_step_edges == null || current_edge == current_step_edges.length)
             return null;
-        }
         EdgeInfo new_edge = new EdgeInfo();
         new_edge.start = current_step_edges[current_edge].get_start().get_name();
         new_edge.finish = current_step_edges[current_edge].get_finish().get_name();
@@ -142,9 +134,8 @@ public class Logic implements LogicInterface {
 
     @Override
     public void nextBigStep() {
-        if (algorithm == null) {
+        if (algorithm == null)
             throw new RuntimeException("Algorithm is not started");
-        }
         algorithm.next_step();
         current_step_edges = algorithm.get_new_edges();
         current_edge = 0;
@@ -168,20 +159,18 @@ public class Logic implements LogicInterface {
 
     @Override
     public ArrayList<EdgeInfo> getAnswer() {
-        if (algorithm == null) {
+        if (algorithm == null)
             throw new RuntimeException("Algorithm is not finished yet");
-        }
         ArrayList<Graph.Edge> answer = algorithm.get_answer();
         ArrayList<EdgeInfo> res = new ArrayList<>();
         for (Graph.Edge edge : answer) {
             EdgeInfo new_edge = new EdgeInfo();
             new_edge.start = edge.get_start().get_name();
             new_edge.finish = edge.get_finish().get_name();
-            if (algorithm == null) {
+            if (algorithm == null)
                 new_edge.color = null;
-            } else {
+            else
                 new_edge.color = algorithm.get_edge_color(edge.get_start(), edge.get_finish());
-            }
             new_edge.weight = edge.get_weight();
             res.add(new_edge);
         }
