@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import com.leti.summer_practice.gui.lib.DoubleNumberTextField?>
+
+<?import com.leti.summer_practice.gui.prog.GraphCanvas?>
+
+<BorderPane maxHeight="-Infinity"
+            maxWidth="-Infinity"
+            minHeight="-Infinity"
+            minWidth="-Infinity"
+            prefHeight="400.0"
+            prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/18"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.leti.summer_practice.gui.prog.SummerPracticeController">
+
+   <center>
+
+      <SplitPane dividerPositions="0.9"
+                 orientation="VERTICAL"
+                 prefHeight="400.0"
+                 prefWidth="600.0"
+                 BorderPane.alignment="CENTER">
+
+         <GraphCanvas fx:id="canvas" minWidth="1" minHeight="1" prefWidth="590" prefHeight="540"/>
+
+         <TextArea fx:id="logTextArea"
+                   editable="false"
+                   prefHeight="40.0"
+                   SplitPane.resizableWithParent="false"/>
+
+      </SplitPane>
+   </center>
+
+   <right>
+
+      <BorderPane prefHeight="200.0"
+                  prefWidth="200.0"
+                  BorderPane.alignment="CENTER">
+         <top>
+
+            <VBox alignment="CENTER"
+                  prefHeight="200.0"
+                  prefWidth="100.0"
+                  spacing="20.0"
+                  BorderPane.alignment="CENTER">
+
+               <Button fx:id="modeButton"
+                       onAction="#onModeClick"
+                       text="%draw_mode"
+                       mnemonicParsing="false"/>
+
+               <Button
+                       fx:id="loadFromFileButton"
+                       onAction="#onLoadFromFileClick"
+                       text="%load_from_file"
+                       mnemonicParsing="false"/>
+
+               <Button fx:id="clearGraphButton"
+                       onAction="#onClearGraphClicked"
+                       text="%clear_graph"
+                       mnemonicParsing="false"/>
+
+            </VBox>
+         </top>
+         <bottom>
+
+            <VBox alignment="CENTER"
+                  prefHeight="200.0"
+                  prefWidth="100.0"
+                  BorderPane.alignment="CENTER"
+                  spacing="5">
+
+               <HBox prefWidth="Infinity"
+                     spacing="1"
+                     alignment="CENTER">
+
+                  <Region HBox.hgrow="ALWAYS"/>
+
+                  <Label text="%speed"/>
+
+                  <Button fx:id="minusSpeedButton"
+                          onAction="#onMinusSpeedClick"
+                          text="-"
+                          mnemonicParsing="false"/>
+
+                  <DoubleNumberTextField fx:id="speedTextField"
+                                         text="1.0"
+                                         prefWidth="40.0"
+                                         alignment="CENTER"/>
+
+                  <Button fx:id="plusSpeedButton"
+                          onAction="#onPlusSpeedClick"
+                          text="+"
+                          mnemonicParsing="false"/>
+
+                  <Region HBox.hgrow="ALWAYS"/>
+               </HBox>
+
+               <Button fx:id="startStopButton"
+                       onAction="#onStartClick"
+                       text="%start"
+                       mnemonicParsing="false"/>
+
+               <Button fx:id="nextStepButton"
+                       onAction="#onNextStepClicked"
+                       text="%next_step"
+                       mnemonicParsing="false"/>
+
+               <Button fx:id="againButton"
+                       onAction="#onAgainClicked"
+                       text="%again"
+                       mnemonicParsing="false"/>
+
+            </VBox>
+         </bottom>
+      </BorderPane>
+   </right>
+</BorderPane>

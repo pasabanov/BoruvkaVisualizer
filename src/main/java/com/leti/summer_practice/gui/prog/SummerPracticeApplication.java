@@ -24,7 +24,7 @@ public class SummerPracticeApplication extends Application {
         application = this;
         setPrimaryStage(primaryStage);
         primaryStage.setTitle(R.string("AppName"));
-        primaryStage.setScene(new Scene(R.loadFXML("summer-practice.fxml"), 800, 600));
+        primaryStage.setScene(new Scene(R.loadFXML("layouts/summer-practice.fxml"), 800, 600));
         primaryStage.show();
     }
 
