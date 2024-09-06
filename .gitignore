@@ -1,4 +1,7 @@
 /.idea/*
+!/.idea/codeStyles/
+!/.idea/runConfigurations/
+
 /.vscode/*
 
 target/
