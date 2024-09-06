@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.leti</groupId>
-    <artifactId>Summer_Practice</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>Summer_Practice</name>
+    <groupId>com.borviz</groupId>
+    <artifactId>BoruvkaVisualizer</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>BoruvkaVisualizer</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -139,7 +139,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.leti.summer_practice/com.leti.summer_practice.SummerPracticeApplication</mainClass>
+                            <mainClass>com.borviz.boruvkavisualizer/com.borviz.boruvkavisualizer.SummerPracticeApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
