@@ -16,9 +16,7 @@ import javafx.scene.shape.Shape;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-
 public class VectorCanvas extends Pane {
-
 
     public static class VectorCanvasContent extends Pane {
 
@@ -52,7 +50,6 @@ public class VectorCanvas extends Pane {
         }
     }
 
-
     public static final double DEFAULT_SCALE_SPEED = 1.1;
     public static final double MIN_SCALE = 0.001;
     public static final double MAX_SCALE = 1000;
@@ -62,7 +59,6 @@ public class VectorCanvas extends Pane {
     public static final boolean DEFAULT_LOCK_SCALE = true;
 
     public static final boolean DEFAULT_SCALE_ON_RESIZE = true;
-
 
     public static final Consumer<VectorCanvas> DEFAULT_DRAWER = canvas -> {
         Line[] lines = {
@@ -80,7 +76,6 @@ public class VectorCanvas extends Pane {
         }
         canvas.drawAll(lines);
     };
-
 
     public final EventHandler<MouseEvent> ON_MOUSE_PRESSED_EVENT_HANDLER = event -> {
 
@@ -148,7 +143,6 @@ public class VectorCanvas extends Pane {
         }
     };
 
-
     private Consumer<VectorCanvas> drawer = DEFAULT_DRAWER;
 
     private final VectorCanvasContent content = new VectorCanvasContent(DEFAULT_SCALE);
@@ -161,7 +155,6 @@ public class VectorCanvas extends Pane {
     private boolean lockScale = DEFAULT_LOCK_SCALE;
 
     private boolean scaleOnResize = DEFAULT_SCALE_ON_RESIZE;
-
 
     public VectorCanvas() {
         this(DEFAULT_DRAWER);
@@ -176,7 +169,6 @@ public class VectorCanvas extends Pane {
 
         draw();
     }
-
 
     @Override
     public void resize(double width, double height) {
@@ -199,7 +191,6 @@ public class VectorCanvas extends Pane {
         super.resize(width, height);
     }
 
-
     public void clear() {
         clearContentChildren();
     }
@@ -214,7 +205,6 @@ public class VectorCanvas extends Pane {
         draw();
     }
 
-
     public Consumer<VectorCanvas> getDrawer() {
         return drawer;
     }
@@ -222,11 +212,9 @@ public class VectorCanvas extends Pane {
         this.drawer = drawer;
     }
 
-
     protected VectorCanvasContent getContent() {
         return content;
     }
-
 
     public ObservableList<Node> getContentChildren() {
         return content.getChildren();
@@ -237,7 +225,6 @@ public class VectorCanvas extends Pane {
     public void clearContentChildren() {
         getContentChildren().clear();
     }
-
 
     public void draw(Shape shape) {
         getContentChildren().add(shape);
@@ -259,14 +246,12 @@ public class VectorCanvas extends Pane {
         getContentChildren().removeAll(shapes);
     }
 
-
     public double getScaleSpeed() {
         return scaleSpeed;
     }
     public void setScaleSpeed(double scaleSpeed) {
         this.scaleSpeed = scaleSpeed;
     }
-
 
     public boolean isLockCamera() {
         return lockCamera;
@@ -275,7 +260,6 @@ public class VectorCanvas extends Pane {
         this.lockCamera = lockCamera;
     }
 
-
     public boolean isLockScale() {
         return lockScale;
     }
@@ -283,14 +267,12 @@ public class VectorCanvas extends Pane {
         this.lockScale = lockScale;
     }
 
-
     public boolean isScaleOnResize() {
         return scaleOnResize;
     }
     public void setScaleOnResize(boolean scaleOnResize) {
         this.scaleOnResize = scaleOnResize;
     }
-
 
     public void setCameraX(double x) {
         content.setTranslateX(-x);
@@ -302,7 +284,6 @@ public class VectorCanvas extends Pane {
         setCameraX(x);
         setCameraY(y);
     }
-
 
     public double getScale() {
         return content.getScale();

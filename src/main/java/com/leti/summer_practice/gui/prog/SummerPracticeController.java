@@ -20,16 +20,13 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimerTask;
 
-
 public class SummerPracticeController implements Initializable {
-
 
     private static final double STEP_SPEED_CHANGE = 0.1;
     private static final double MIN_STEP_SPEED = 0.1;
     private static final double MAX_STEP_SPEED = 10;
     
     private static final String LOG_DIVIDER = ";\n";
-
 
     @FXML
     public GraphCanvas canvas;
@@ -57,14 +54,11 @@ public class SummerPracticeController implements Initializable {
     @FXML
     public Button againButton;
 
-
     private final LogicInterface logic = new Logic();
 
     private boolean answerAlreadyPrinted = false;
 
-
     private final SingleTaskTimer autoStepTimer = new SingleTaskTimer(true);
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -102,7 +96,6 @@ public class SummerPracticeController implements Initializable {
             }
         });
 
-
         canvas.setCameraXY(-canvas.getPrefWidth() / 2, -canvas.getPrefHeight() / 2);
         canvas.setScale(
                 (canvas.getPrefWidth() + canvas.getPrefHeight())
@@ -115,7 +108,6 @@ public class SummerPracticeController implements Initializable {
 
         canvas.redraw();
     }
-
 
     @FXML
     public void onClearGraphClicked(ActionEvent actionEvent) {
@@ -149,7 +141,6 @@ public class SummerPracticeController implements Initializable {
         }
     }
 
-
     @FXML
     public void onLoadFromFileClick(ActionEvent actionEvent) {
 
@@ -181,7 +172,6 @@ public class SummerPracticeController implements Initializable {
         canvas.redraw();
     }
 
-
     @FXML
     public void onStartClick(ActionEvent actionEvent) {
 
@@ -202,7 +192,6 @@ public class SummerPracticeController implements Initializable {
         autoStepTimer.cancel();
         startStopButton.setText(R.string("start"));
     }
-
 
     @FXML
     public void onNextStepClicked(ActionEvent actionEvent) {
@@ -339,7 +328,6 @@ public class SummerPracticeController implements Initializable {
         logTextArea.appendText(sb.toString());
     }
 
-
     @FXML
     public void onAgainClicked(ActionEvent actionEvent) {
         resetStartStopButtonAndTimer();
@@ -349,7 +337,6 @@ public class SummerPracticeController implements Initializable {
         canvas.clearSpecialColorEdges();
         canvas.redraw();
     }
-
 
     @FXML
     public void onModeClick(ActionEvent actionEvent) {
@@ -373,7 +360,6 @@ public class SummerPracticeController implements Initializable {
         modeButton.setText(R.string("draw_mode"));
     }
 
-
     @FXML
     public void onMinusSpeedClick(ActionEvent actionEvent) {
         double oldValue = Double.parseDouble(speedTextField.getText());
@@ -395,7 +381,6 @@ public class SummerPracticeController implements Initializable {
 
         changeTimerStepSpeed();
     }
-
 
     private void changeTimerStepSpeed() {
         if (!autoStepTimer.hasCurrentTimerTask())

@@ -39,7 +39,6 @@ public class Graph {
         return vertex_count == get_vertex_count();
     }
 
-
     private int dfs(Map<Graph.Node, Boolean> closed, Graph.Node current) {
         closed.put(current, true);
         int res = 1;
@@ -212,7 +211,6 @@ public class Graph {
         return true;
     }
 
-
     public Node create_vertex(String name) {
         if (address.containsKey(name))
             throw new UnsupportedOperationException("Vertex with same name already exists");
@@ -322,7 +320,6 @@ public class Graph {
         return res;
     }
 
-
     private void resize_matrix() {
         for (ArrayList<Integer> integers : matrix)
             integers.add(null);
@@ -331,7 +328,6 @@ public class Graph {
             new_list.add(null);
         matrix.add(new_list);
     }
-
 
     public static class Node {
 

@@ -156,7 +156,6 @@ public class Logic implements LogicInterface {
         return algorithm != null;
     }
 
-
     @Override
     public ArrayList<EdgeInfo> getAnswer() {
         if (algorithm == null)

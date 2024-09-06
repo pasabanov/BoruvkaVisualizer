@@ -28,7 +28,6 @@ public class Algorithm {
         }
     }
 
-
     private static class Inner {
         boolean val;
 

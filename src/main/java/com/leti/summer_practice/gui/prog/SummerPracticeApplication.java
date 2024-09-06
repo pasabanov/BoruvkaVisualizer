@@ -5,19 +5,15 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
 public class SummerPracticeApplication extends Application {
-
 
     private static SummerPracticeApplication application;
 
     private Stage primaryStage;
 
-
     public static void launchSummerPracticeApplication(String... args) {
         launch(args);
     }
-
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -28,11 +24,9 @@ public class SummerPracticeApplication extends Application {
         primaryStage.show();
     }
 
-
     public static SummerPracticeApplication getApplication() {
         return application;
     }
-
 
     public Stage getPrimaryStage() {
         return primaryStage;
