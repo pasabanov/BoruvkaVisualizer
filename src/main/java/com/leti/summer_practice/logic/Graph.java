@@ -49,10 +49,10 @@ public class Graph {
         return res;
     }
 
-    private static class Graph_builder {
+    private static class GraphBuilder {
 
-        Graph result;
-        String[] vertex_names;
+        private Graph result;
+        private String[] vertex_names;
 
         private int correct_line_length;
         private boolean column_mode;
@@ -62,7 +62,7 @@ public class Graph {
 
         private boolean triangle_mode;
 
-        Graph_builder() {
+        GraphBuilder() {
             result = new Graph();
             column_mode = true;
             triangle_mode = false;
@@ -181,7 +181,7 @@ public class Graph {
             if (line == null) {
                 return new Graph();
             }
-            Graph_builder builder = new Graph_builder();
+            GraphBuilder builder = new GraphBuilder();
             String[] names = line.split("\\s+");
             names = check_first(names);
             builder.init_names(names);
