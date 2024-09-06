@@ -7,22 +7,21 @@ public class Algorithm {
     private ArrayList<Graph.Node> vertices;
     private ArrayList<Graph.Edge> edges;
     private Graph temporary_graph; // второй граф для поиска МОД
-    private Graph.Edge[] result; // список списков ребер,
-    // которые были добавлены в компоненты связности в конце шага
-    private Map<Graph.Node, Integer> hashTableNode; // хэш-таблица для вершин и компонент
+    private Graph.Edge[] result; // list of edge lists that were added to the connectivity components at the end of the step
+    private Map<Graph.Node, Integer> hashTableNode; // hash table for vertices and components
     private Map<Graph.Edge, Integer> edges_color;
 
-    int length_components;
+    private int length_components;
 
     Algorithm(Graph graph1) {
-        vertices = graph1.get_vertices(); // все вершины графа
-        edges = graph1.get_edges(); // все ребра графа
+        vertices = graph1.get_vertices(); // all vertices of the graph
+        edges = graph1.get_edges(); // all edges of the graph
         temporary_graph = new Graph();
         length_components = vertices.size();
         edges_color = new HashMap<>();
         hashTableNode = new HashMap<>();
 
-        for (int i = 0; i < vertices.size(); i++) { // заполенение второго графа
+        for (int i = 0; i < vertices.size(); i++) { // second column filling
             temporary_graph.create_vertex(vertices.get(i).get_name());
             hashTableNode.put(vertices.get(i), i);
         }
