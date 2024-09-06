@@ -21,9 +21,7 @@ public final class R {
 
     private static final String DEFAULT_NOT_FOUND_STRING = "%string_not_found%";
 
-
     private static ResourceBundle mainStringsBundle = ResourceBundle.getBundle(MAIN_STRINGS_BUNDLE_PATH);
-
 
     /**
      * Class can not be instantiated.
@@ -31,7 +29,6 @@ public final class R {
     private R() {
         throw new Error("Forbidden instance of " + R.class.getName() + "!");
     }
-
 
     /**
      * @return main strings bundle.
@@ -66,7 +63,6 @@ public final class R {
         setLocale(getLocale());
     }
 
-
     /**
      * Get string from main strings bundle.
      *
@@ -92,7 +88,6 @@ public final class R {
         return R.class.getResource(name);
     }
 
-
     /**
      * Get FXMLLoader instance from a string or url with (or with not) specified bundle.
      *
@@ -111,7 +106,6 @@ public final class R {
     public static FXMLLoader fxmlLoader(String resourceName, ResourceBundle resourceBundle) {
         return fxmlLoader(resource(resourceName), resourceBundle);
     }
-
 
     /**
      * Load a Parent (View) from an .fxml file by a url or filename with (or with not) specified bundle).

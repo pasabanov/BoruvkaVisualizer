@@ -6,15 +6,11 @@ import java.util.TimerTask;
 
 public class SingleTaskTimer extends Timer {
 
-
     public static final long NO_TASK_COMPLETED = -1;
-
 
     private long lastCompletedTaskTime = NO_TASK_COMPLETED; // milliseconds
 
-
     private TimerTask currentTimerTask = null;
-
 
     public SingleTaskTimer() {
     }
@@ -22,7 +18,6 @@ public class SingleTaskTimer extends Timer {
     public SingleTaskTimer(boolean isDaemon) {
         super(isDaemon);
     }
-
 
     @Override
     public void schedule(TimerTask task, long delay) {
@@ -97,7 +92,6 @@ public class SingleTaskTimer extends Timer {
         super.scheduleAtFixedRate(currentTimerTask, firstTime, period);
     }
 
-
     @Override
     public void cancel() {
         if (currentTimerTask != null)
@@ -105,11 +99,9 @@ public class SingleTaskTimer extends Timer {
         currentTimerTask = null;
     }
 
-
     public long timeFromLastCompletion() {
         return System.currentTimeMillis() - lastCompletedTaskTime;
     }
-
 
     public TimerTask getCurrentTimerTask() {
         return currentTimerTask;

@@ -8,9 +8,7 @@ import java.util.Locale;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
-
 public class DoubleNumberTextField extends TextField {
-
 
     private static final Pattern validEditingState = Pattern.compile("(([1-9]\\d*)|0)?(\\.\\d*)?");
 
@@ -42,7 +40,6 @@ public class DoubleNumberTextField extends TextField {
         }
     }
 
-
     public DoubleNumberTextField() {
         this("");
     }
@@ -52,7 +49,6 @@ public class DoubleNumberTextField extends TextField {
 
         makeTextFieldAcceptOnlyDoubleNumbers(this);
     }
-
 
     public static void makeTextFieldAcceptOnlyDoubleNumbers(TextField textField) {
         textField.setTextFormatter(new TextFormatter<>(new Converter(), 1.0, filter));

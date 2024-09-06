@@ -24,9 +24,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
 public class GraphCanvas extends VectorCanvas {
-
 
     public static final double DEFAULT_CANVAS_WIDTH = 200; // relative
     public static final double DEFAULT_CANVAS_HEIGHT = 200; // relative
@@ -39,10 +37,8 @@ public class GraphCanvas extends VectorCanvas {
     public static final double DEFAULT_EDGE_STROKE_WIDTH = 6; // pixels
     public static final double DEFAULT_EDGE_WEIGHT_TEXT_SIZE = 12; // pixels
 
-
     private static final Color DEFAULT_VERTEX_COLOR = Color.DARKGRAY;
     private static final Color DEFAULT_EDGE_COLOR = Color.LIGHTGRAY;
-
 
     public enum GraphMode {
         DRAWING,
@@ -50,7 +46,6 @@ public class GraphCanvas extends VectorCanvas {
 
         public static final GraphMode DEFAULT_GRAPH_MODE = MOVING;
     }
-
 
     private class CircleEvents {
 
@@ -215,7 +210,6 @@ public class GraphCanvas extends VectorCanvas {
         }
     }
 
-
     private class LineEvents {
 
         public final EventHandler<MouseEvent> onMouseClickedEventHandler = event -> {
@@ -241,7 +235,6 @@ public class GraphCanvas extends VectorCanvas {
             event.consume();
         };
     }
-
 
     private static Color getColorByInt(int n) {
         class Colors {
@@ -275,9 +268,7 @@ public class GraphCanvas extends VectorCanvas {
         return getColorByInt(n);
     }
 
-
     private LogicInterface logic;
-
 
     private final Map<String,Circle> verticesMap = new HashMap<>();
     private final Map<Circle,String> reversedVerticesMap = new HashMap<>();
@@ -289,7 +280,6 @@ public class GraphCanvas extends VectorCanvas {
 
     private final Map<Pair<String,String>,Text> edgesTextsMap = new HashMap<>();
 
-
     private final Set<LogicInterface.EdgeInfo> specialColorEdges = new TreeSet<>(
             Comparator.comparing((LogicInterface.EdgeInfo o) -> o.start)
                     .thenComparing(o -> o.finish)
@@ -300,7 +290,6 @@ public class GraphCanvas extends VectorCanvas {
     private final LineEvents lineEvents = new LineEvents();
 
     private GraphMode graphMode = GraphMode.DEFAULT_GRAPH_MODE;
-
 
     public GraphCanvas() {
 
@@ -376,7 +365,6 @@ public class GraphCanvas extends VectorCanvas {
             drawAll(verticesTextsMap.values());
         });
     }
-
 
     @Override
     public void redraw() {
@@ -493,7 +481,6 @@ public class GraphCanvas extends VectorCanvas {
         edgesTextsMap.put(startFinish, text);
     }
 
-
     public void notifyColorsChanged() {
         for (Map.Entry<String,Circle> vertex : verticesMap.entrySet()) {
             vertex.getValue().setFill(
@@ -510,7 +497,6 @@ public class GraphCanvas extends VectorCanvas {
         }
     }
 
-
     public Set<LogicInterface.EdgeInfo> getSpecialColorEdges() {
         return specialColorEdges;
     }
@@ -526,7 +512,6 @@ public class GraphCanvas extends VectorCanvas {
         LogicInterface.EdgeInfo copy = new LogicInterface.EdgeInfo(edge.finish, edge.start, edge.weight, edge.color);
         return specialColorEdges.contains(copy);
     }
-
 
     public GraphMode getGraphMode() {
         return graphMode;
