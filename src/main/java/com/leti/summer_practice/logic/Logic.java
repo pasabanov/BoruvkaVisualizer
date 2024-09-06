@@ -9,10 +9,11 @@ public class Logic implements LogicInterface {
     private Algorithm algorithm;
 
     private int current_edge;
-    Graph.Edge[] current_step_edges;
+    private Graph.Edge[] current_step_edges;
 
     public Logic() {
         graph = new Graph();
+		algorithm = null;
         current_edge = 0;
         current_step_edges = null;
     }

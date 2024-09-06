@@ -7,8 +7,8 @@ public class Graph {
 
     private ArrayList<ArrayList<Integer>> matrix;
     private Map<String, Integer> address;
-    int max_index;
-    LinkedList<Integer> available_numbers;
+    private int max_index;
+    private LinkedList<Integer> available_numbers;
 
     public Graph() {
         matrix = new ArrayList<>();
@@ -124,7 +124,7 @@ public class Graph {
         void read_row(String[] row) {
             check_mode(row);
             int start_index = column_mode ? 1 : 0;
-            for (int i = start_index; i < row.length; i++, current_line_count++) {
+            for (int i = start_index; i < row.length; i++) {
                 if (!row[i].equals("-")) {
                     try {
                         int new_val = Integer.parseInt(row[i]);
@@ -140,6 +140,7 @@ public class Graph {
                     }
                 }
             }
+	        current_line_count++;
         }
 
         Graph get_result() {
@@ -166,10 +167,10 @@ public class Graph {
     }
 
     private static String[] check_first(String[] values) {
-        if (values[0].equals("")) {
+        if (values[0].isEmpty()) {
             ArrayList<String> temp = new ArrayList<>(Arrays.asList(values));
             temp.remove(0);
-            return temp.toArray(new String[temp.size()]);
+            return temp.toArray(new String[0]);
         }
         return values;
     }
@@ -181,19 +182,19 @@ public class Graph {
                 return new Graph();
             }
             Graph_builder builder = new Graph_builder();
-            String[] names = line.split(" +");
+            String[] names = line.split("\\s+");
             names = check_first(names);
             builder.init_names(names);
             line = buffer.readLine();
             while (line != null) {
-                String[] new_values = line.split(" +");
+                String[] new_values = line.split("\\s+");
                 new_values = check_first(new_values);
                 builder.read_row(new_values);
                 line = buffer.readLine();
             }
             return builder.get_result();
         } catch (IOException e) {
-            throw new RuntimeException("error while opening file");
+            throw new RuntimeException("error while opening file", e);
         }
     }
 
@@ -216,7 +217,7 @@ public class Graph {
             throw new UnsupportedOperationException("Vertex with same name already exists");
         Node new_node = new Node(name);
         int new_index;
-        if (available_numbers.size() > 0) {
+        if (!available_numbers.isEmpty()) {
             new_index = available_numbers.removeLast();
             address.put(name, new_index);
         } else {
