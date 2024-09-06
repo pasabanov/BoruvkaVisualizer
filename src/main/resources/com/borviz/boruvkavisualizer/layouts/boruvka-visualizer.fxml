@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import com.leti.summer_practice.gui.lib.DoubleNumberTextField?>
+<?import com.borviz.boruvkavisualizer.gui.lib.DoubleNumberTextField?>
 
-<?import com.leti.summer_practice.gui.prog.GraphCanvas?>
+<?import com.borviz.boruvkavisualizer.gui.prog.GraphCanvas?>
 
 <BorderPane maxHeight="-Infinity"
             maxWidth="-Infinity"
@@ -15,7 +15,7 @@
             prefWidth="800.0"
             xmlns="http://javafx.com/javafx/18"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.leti.summer_practice.gui.prog.SummerPracticeController">
+            fx:controller="com.borviz.boruvkavisualizer.gui.prog.BorVizController">
 
    <center>
 

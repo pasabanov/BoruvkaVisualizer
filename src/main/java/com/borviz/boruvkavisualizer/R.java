@@ -1,4 +1,4 @@
-package com.leti.summer_practice;
+package com.borviz.boruvkavisualizer;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
  */
 public final class R {
 
-    private static final String BUNDLES_PATH = "com/leti/summer_practice/strings/";
+    private static final String BUNDLES_PATH = "com/borviz/boruvkavisualizer/strings/";
     private static final String MAIN_STRINGS_BUNDLE_NAME = "strings";
     private static final String MAIN_STRINGS_BUNDLE_PATH = BUNDLES_PATH + MAIN_STRINGS_BUNDLE_NAME;
 

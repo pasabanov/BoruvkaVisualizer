@@ -1,8 +1,8 @@
-package com.leti.summer_practice.gui.prog;
+package com.borviz.boruvkavisualizer.gui.prog;
 
-import com.leti.summer_practice.R;
-import com.leti.summer_practice.gui.lib.VectorCanvas;
-import com.leti.summer_practice.logic.LogicInterface;
+import com.borviz.boruvkavisualizer.R;
+import com.borviz.boruvkavisualizer.gui.lib.VectorCanvas;
+import com.borviz.boruvkavisualizer.logic.LogicInterface;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.Event;
 import javafx.event.EventHandler;

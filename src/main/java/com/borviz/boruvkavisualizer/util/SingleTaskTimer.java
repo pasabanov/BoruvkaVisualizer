@@ -1,4 +1,4 @@
-package com.leti.summer_practice.util;
+package com.borviz.boruvkavisualizer.util;
 
 import java.util.Date;
 import java.util.Timer;
