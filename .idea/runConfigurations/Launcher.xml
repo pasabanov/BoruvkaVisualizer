@@ -5,7 +5,7 @@
     <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.leti.summer_practice.*" />
+        <option name="PATTERN" value="com.borviz.boruvkavisualizer.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
