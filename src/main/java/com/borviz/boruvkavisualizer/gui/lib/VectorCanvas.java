@@ -1,4 +1,4 @@
-package com.leti.summer_practice.gui.lib;
+package com.borviz.boruvkavisualizer.gui.lib;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;

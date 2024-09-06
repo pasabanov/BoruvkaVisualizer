@@ -1,4 +1,4 @@
-package com.leti.summer_practice.gui.lib;
+package com.borviz.boruvkavisualizer.gui.lib;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;

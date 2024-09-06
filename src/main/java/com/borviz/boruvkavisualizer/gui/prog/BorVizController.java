@@ -1,9 +1,9 @@
-package com.leti.summer_practice.gui.prog;
+package com.borviz.boruvkavisualizer.gui.prog;
 
-import com.leti.summer_practice.R;
-import com.leti.summer_practice.logic.Logic;
-import com.leti.summer_practice.logic.LogicInterface;
-import com.leti.summer_practice.util.SingleTaskTimer;
+import com.borviz.boruvkavisualizer.R;
+import com.borviz.boruvkavisualizer.logic.Logic;
+import com.borviz.boruvkavisualizer.logic.LogicInterface;
+import com.borviz.boruvkavisualizer.util.SingleTaskTimer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimerTask;
 
-public class SummerPracticeController implements Initializable {
+public class BorVizController implements Initializable {
 
     private static final double STEP_SPEED_CHANGE = 0.1;
     private static final double MIN_STEP_SPEED = 0.1;
@@ -151,7 +151,7 @@ public class SummerPracticeController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         if (LastDirectoryContainer.lastDirectory != null)
             fileChooser.setInitialDirectory(LastDirectoryContainer.lastDirectory);
-        File file = fileChooser.showOpenDialog(SummerPracticeApplication.getApplication().getPrimaryStage());
+        File file = fileChooser.showOpenDialog(BorVizApplication.getApplication().getPrimaryStage());
         if (file == null)
             return;
         LastDirectoryContainer.lastDirectory = file.getParentFile();
