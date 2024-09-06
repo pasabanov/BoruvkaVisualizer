@@ -158,6 +158,7 @@ public class SummerPracticeController implements Initializable {
         try {
             logic.loadFile(file);
         } catch (RuntimeException re) {
+			re.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(R.string("failed_to_load_file_alert_title"));
             alert.setHeaderText(R.string("error_alert_header"));
