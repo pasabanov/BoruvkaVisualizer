@@ -7,31 +7,31 @@ import javafx.stage.Stage;
 
 public class BorVizApplication extends Application {
 
-    private static BorVizApplication application;
+	private static BorVizApplication application;
 
-    private Stage primaryStage;
+	private Stage primaryStage;
 
-    public static void launchBorVizApplication(String... args) {
-        launch(args);
-    }
+	public static void launchBorVizApplication(String... args) {
+		launch(args);
+	}
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        application = this;
-        setPrimaryStage(primaryStage);
-        primaryStage.setTitle(R.string("AppName"));
-        primaryStage.setScene(new Scene(R.loadFXML("layouts/boruvka-visualizer.fxml"), 800, 600));
-        primaryStage.show();
-    }
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		application = this;
+		setPrimaryStage(primaryStage);
+		primaryStage.setTitle(R.string("AppName"));
+		primaryStage.setScene(new Scene(R.loadFXML("layouts/boruvka-visualizer.fxml"), 800, 600));
+		primaryStage.show();
+	}
 
-    public static BorVizApplication getApplication() {
-        return application;
-    }
+	public static BorVizApplication getApplication() {
+		return application;
+	}
 
-    public Stage getPrimaryStage() {
-        return primaryStage;
-    }
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+	public void setPrimaryStage(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+	}
 }
