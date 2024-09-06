@@ -25,7 +25,7 @@ public class SummerPracticeController implements Initializable {
     private static final double STEP_SPEED_CHANGE = 0.1;
     private static final double MIN_STEP_SPEED = 0.1;
     private static final double MAX_STEP_SPEED = 10;
-    
+
     private static final String LOG_DIVIDER = ";\n";
 
     @FXML
