@@ -5,13 +5,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class BorVizApplication extends Application {
+public final class BorVizApplication extends Application {
 
 	private static BorVizApplication application;
 
 	private Stage primaryStage;
 
-	public static void launchBorVizApplication(String... args) {
+	public static void launchApplication(String... args) {
 		launch(args);
 	}
 

@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.TimerTask;
 
-public class BorVizController implements Initializable {
+public final class BorVizController implements Initializable {
 
 	private static final double STEP_SPEED_CHANGE = 0.1;
 	private static final double MIN_STEP_SPEED = 0.1;
