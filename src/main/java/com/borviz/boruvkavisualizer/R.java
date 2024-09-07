@@ -16,12 +16,12 @@ import java.util.ResourceBundle;
 public final class R {
 
 	private static final String BUNDLES_PATH = "com/borviz/boruvkavisualizer/strings/";
-	private static final String MAIN_STRINGS_BUNDLE_NAME = "strings";
-	private static final String MAIN_STRINGS_BUNDLE_PATH = BUNDLES_PATH + MAIN_STRINGS_BUNDLE_NAME;
+	private static final String STRINGS_BUNDLE_NAME = "strings";
+	private static final String STRINGS_BUNDLE_PATH = BUNDLES_PATH + STRINGS_BUNDLE_NAME;
 
 	private static final String DEFAULT_NOT_FOUND_STRING = "%string_not_found%";
 
-	private static ResourceBundle mainStringsBundle = ResourceBundle.getBundle(MAIN_STRINGS_BUNDLE_PATH);
+	private static ResourceBundle mainStringsBundle = ResourceBundle.getBundle(STRINGS_BUNDLE_PATH);
 
 	/**
 	 * Class can not be instantiated.
@@ -53,7 +53,7 @@ public final class R {
 	 * @param locale - required locale
 	 */
 	public static void setLocale(Locale locale) {
-		mainStringsBundle = ResourceBundle.getBundle(MAIN_STRINGS_BUNDLE_PATH, locale);
+		mainStringsBundle = ResourceBundle.getBundle(STRINGS_BUNDLE_PATH, locale);
 	}
 
 	/**

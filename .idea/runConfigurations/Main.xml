@@ -1,8 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Launcher" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.borviz.boruvkavisualizer.Launcher" />
+  <configuration default="false" name="Main" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.borviz.boruvkavisualizer.Main" />
     <module name="BoruvkaVisualizer" />
-    <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.borviz.boruvkavisualizer.*" />
