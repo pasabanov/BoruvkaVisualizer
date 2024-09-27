@@ -29,7 +29,7 @@ public class DoubleNumberTextField extends TextField {
 		}
 		@Override
 		public String toString(Double d) {
-			return String.format(new Locale("en_EN"), "%." + precision + "f", d).replaceAll("([.,]\\d+?)0*$", "$1");
+			return String.format(Locale.of("en"), "%." + precision + "f", d).replaceAll("([.,]\\d+?)0*$", "$1");
 		}
 		@Override
 		public Double fromString(String s) {

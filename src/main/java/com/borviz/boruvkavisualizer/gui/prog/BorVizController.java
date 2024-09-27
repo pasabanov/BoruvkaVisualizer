@@ -88,7 +88,7 @@ public final class BorVizController implements Initializable {
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				speedTextField.setText(
 						String.format(
-								new Locale("en_EN"),
+								Locale.of("en"),
 								"%." + PRECISION + "f",
 								Double.parseDouble(newValue)
 						).replaceAll("([.,]\\d+?)0*$", "$1")
