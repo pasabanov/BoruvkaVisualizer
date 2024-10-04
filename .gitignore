@@ -8,6 +8,7 @@
 !/.idea/vcs.xml
 
 /.vscode/*
+!/.vscode/settings.json
 
 target/
 build/
