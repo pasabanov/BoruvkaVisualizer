@@ -4,6 +4,10 @@
 
 `BoruvkaVisualizer` is a small GUI application for visualizing the [Borůvka's algorithm](https://wikipedia.org/wiki/Borůvka's_algorithm).
 
+## Screenshots
+
+![six vertices](docs/images/six-vertices.png)
+
 ## License
 
 This program is free software: you can redistribute it and/or modify
